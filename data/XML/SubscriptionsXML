@@ -1,0 +1,20 @@
+<?xml version = "1.0"?>
+<Subscriptions>
+   <Subscription id = "1">
+      <type>Internet</type>
+      <price>40.0</price>
+      <duration>12</duration>
+   </Subscription>
+
+   <Subscription id = "2">
+      <type>Phone</type>
+      <price>119.99</price>
+      <duration>24</duration>
+   </Subscription>
+
+   <Subscription id = "3">
+      <type>TV</type>
+      <price>39.99</price>
+      <duration>24</duration>
+   </Subscription>
+</Subscriptions>

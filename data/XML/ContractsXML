@@ -1,0 +1,20 @@
+<?xml version = "1.0"?>
+<Contracts>
+   <Contract id = "1">
+      <clientId>1</clientId>
+      <subscriptionId>1</subscriptionId>
+      <date>2021-02-27</date>
+   </Contract>
+
+   <Contract id = "2">
+      <clientId>2</clientId>
+      <subscriptionId>2</subscriptionId>
+      <date>2019-03-05</date>
+   </Contract>
+
+   <Contract id = "3">
+      <clientId>3</clientId>
+      <subscriptionId>3</subscriptionId>
+      <date>2021-02-20</date>
+   </Contract>
+</Contracts>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Subscriptions>
+   <Subscription id="1">
+      <type>Internet</type>
+      <price>40</price>
+      <duration>24</duration>
+   </Subscription>
+</Subscriptions>

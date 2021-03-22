@@ -1,0 +1,23 @@
+<?xml version = "1.0"?>
+<Clients>
+   <Client id = "1">
+      <cnp>1850509204994</cnp>
+      <name>Sava Superman</name>
+      <email>Superman0221@yahoo.com</email>
+      <address>Str. Rotarilor nr. 784</address>
+   </Client>
+
+   <Client id = "2">
+      <cnp>6001203543948</cnp>
+      <name>John Smith</name>
+      <email>jonny@gmail.com</email>
+      <address>Str. Prieteniei, nr. 59</address>
+   </Client>
+
+   <Client id = "3">
+      <cnp>1992510220221</cnp>
+      <name>Ion Ionescu</name>
+      <email>ionescuIon@gmail.com</email>
+      <address>Str. Miercuri, nr. 25</address>
+   </Client>
+</Clients>
