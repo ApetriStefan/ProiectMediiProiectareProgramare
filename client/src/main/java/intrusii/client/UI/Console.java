@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -37,9 +36,9 @@ public class Console {
                 case "1":
                     clientMenu();
                     break;
-//                case "2":
-//                    subscriptionMenu();
-//                    break;
+                case "2":
+                    subscriptionMenu();
+                    break;
 //                case "3":
 //                    contractMenu();
 //                    break;
@@ -91,42 +90,42 @@ public class Console {
         }
     }
 
-//    private void subscriptionMenu() {
-//        String option;
-//        while(true){
-//            printSubscriptionMenu();
-//            Scanner scannerOption = new Scanner(System.in);
-//            System.out.print(">> ");
-//            option = scannerOption.nextLine();
-//            switch (option) {
-//                case "0":
-//                    return;
-//                case "1":
-//                    addSubscription();
-//                    break;
-//                case "2":
-//                    deleteSubscription();
-//                    break;
-//                case "3":
-//                    updateSubscription();
-//                    break;
-//                case "4":
-//                    printAllSubscriptions();
-//                    break;
-//                case "5":
-//                    filterSubscriptionsByDuration();
-//                    break;
-//                case "6":
-//                    filterSubscriptionsByType();
-//                    break;
-//                default:
-//                    System.err.println("Invalid command");
-//                    try {
-//                        Thread.sleep(100);
-//                    } catch (InterruptedException ignored){}
-//            }
-//        }
-//    }
+    private void subscriptionMenu() {
+        String option;
+        while(true){
+            printSubscriptionMenu();
+            Scanner scannerOption = new Scanner(System.in);
+            System.out.print(">> ");
+            option = scannerOption.nextLine();
+            switch (option) {
+                case "0":
+                    return;
+                case "1":
+                    addSubscription();
+                    break;
+                case "2":
+                    deleteSubscription();
+                    break;
+                case "3":
+                    updateSubscription();
+                    break;
+                case "4":
+                    printAllSubscriptions();
+                    break;
+                case "5":
+                    filterSubscriptionsByDuration();
+                    break;
+                case "6":
+                    filterSubscriptionsByType();
+                    break;
+                default:
+                    System.err.println("Invalid command");
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ignored){}
+            }
+        }
+    }
 //
 //    private void contractMenu() {
 //        String option;
@@ -364,157 +363,165 @@ public class Console {
         }
     }
 
-////`````````````````````````````````````````````````Subscription`````````````````````````````````````````````````//
-//    /**
-//     * Adds the Subscription that has been read from console
-//     */
-//    private void addSubscription() {
-//        Subscription subscription = readSubscription();
-//        if (subscription == null) {
-//            System.out.println("Please insert valid data");
-//            return;
-//        }
-//        try {
-//            socketCtrl.addSubscription(subscription);
-//            //System.out.println("Subscription successfully added");
-//        } catch (ValidatorException | IllegalArgumentException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * Deletes a subscription by an ID that has been read from console.
-//     *
-//     */
-//    private void deleteSubscription() {
-//        Long id = readSubscriptionID();
-//        if (id == null || id < 0) {
-//            System.out.println("Given ID is not valid");
-//            return;
-//        }
-//        try {
-//            socketCtrl.deleteSubscription(id);
-//            //System.out.println("Subscription successfully deleted");
-//        } catch (ValidatorException | IllegalArgumentException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * Update the Subscription that has been read from console
-//     */
-//    private void updateSubscription() {
-//        System.out.println("Input the ID of the subscription to be updated and the new subscription");
-//        Subscription subscription = readSubscriptionUpdate();
-//        if (subscription == null || subscription.getId() < 0) {
-//            System.out.println("Please insert valid data");
-//            return;
-//        }
-//        try {
-//            socketCtrl.updateSubscription(subscription);
-//            //System.out.println("Subscription successfully updated");
-//        } catch (ValidatorException | IllegalArgumentException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * Prints all subscriptions in the repository
-//     *
-//     */
-//    private void printAllSubscriptions() {
-//        Set<Subscription> subscriptions = socketCtrl.getAllSubscriptions();
-//        System.out.println("The subscriptions are: ");
-//        subscriptions.forEach(System.out::println);
-//    }
-//
-//    private void filterSubscriptionsByDuration() {
-//        System.out.print("Enter duration: ");
-//        Scanner scannerDuration = new Scanner(System.in);
-//        String durationS = scannerDuration.nextLine();
-//        try{
-//            int duration = Integer.parseInt(durationS);
-//            socketCtrl.filterSubscriptionByDuration(duration).forEach(System.out::println);
-//        }catch (NumberFormatException ex){
-//            System.err.println("Please introduce a number");
-//        }
-//    }
-//
-//    private void filterSubscriptionsByType() {
-//        System.out.print("Enter type: ");
-//        Scanner scannerType = new Scanner(System.in);
-//        String type = scannerType.nextLine();
-//        socketCtrl.filterSubscriptionByType(type).forEach(System.out::println);
-//    }
-//
-//    /**
-//     * Reads a subscription from the keyboard.
-//     *
-//     * @return an {@code Subscription} - null if the data was not valid, otherwise returns the entity.
-//     */
-//    private Subscription readSubscription() {
-//        System.out.println("Read Subscription {Type, Price, Duration}");
-//        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            String typeString = bufferRead.readLine();
-//            SubscriptionType type = SubscriptionType.Default;
-//            type = type.setSubscriptionType(typeString);
-//            float price = Float.parseFloat(bufferRead.readLine());
-//            int duration = Integer.parseInt(bufferRead.readLine());
-//
-//            Subscription subscription = new Subscription(type, price, duration);
-//            subscription.setId(1L);
-//
-//            return subscription;
-//        } catch (IOException | NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Reads a subscription from the keyboard for update.
-//     *
-//     * @return an {@code Subscription} - null if the data was not valid, otherwise returns the entity.
-//     */
-//    private Subscription readSubscriptionUpdate() {
-//        System.out.println("Read Subscription {id, Type, Price, Duration}");
-//        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            Long id = Long.valueOf(bufferRead.readLine());
-//            String typeString = bufferRead.readLine();
-//            SubscriptionType type = SubscriptionType.Default;
-//            type = type.setSubscriptionType(typeString);
-//            float price = Float.parseFloat(bufferRead.readLine());
-//            int duration = Integer.parseInt(bufferRead.readLine());
-//
-//            Subscription subscription = new Subscription(type, price, duration);
-//            subscription.setId(id);
-//
-//            return subscription;
-//        } catch (IOException | NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Reads a subscription ID from the keyboard.
-//     *
-//     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
-//     */
-//    private Long readSubscriptionID() {
-//        System.out.println("Read Subscription ID {id}");
-//        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            return Long.valueOf(bufferRead.readLine());
-//        }
-//        catch (IOException | NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-//
+//`````````````````````````````````````````````````Subscription`````````````````````````````````````````````````//
+    /**
+     * Adds the Subscription that has been read from console
+     */
+    private void addSubscription() {
+        String subscription = readSubscription();
+        if (subscription == null) {
+            System.err.println("Please insert valid data");
+        }
+        else {
+            Future<String> resultFuture = socketClientController.addSubscription(subscription);
+            try {
+                String result = resultFuture.get();
+                System.out.println(result);
+            } catch (InterruptedException | ExecutionException e) {
+                System.err.println("Something went wrong with the connection");
+            }
+        }
+    }
+
+    /**
+     * Deletes a subscription by an ID that has been read from console.
+     *
+     */
+    private void deleteSubscription() {
+        String id = readSubscriptionID();
+        if (id == null) {
+            System.err.println("Invalid ID");
+        }
+        else{
+            Future<String> resultFuture = socketClientController.deleteSubscription(id);
+            try{
+                String result = resultFuture.get();
+                System.out.println(result);
+            }catch (InterruptedException | ExecutionException e) {
+                System.err.println("Something went wrong with the connection");
+            }
+        }
+    }
+
+    /**
+     * Update the Subscription that has been read from console
+     */
+    private void updateSubscription() {
+        String subscription = readSubscriptionUpdate();
+        if (subscription == null) {
+            System.err.println("Invalid input");
+        }
+        else{
+            Future<String> resultFuture = socketClientController.updateSubscription(subscription);
+            try {
+                String result = resultFuture.get();
+                System.out.println(result);
+            } catch (InterruptedException | ExecutionException e) {
+                System.err.println("Something went wrong with the connection");
+            }
+        }
+    }
+
+    /**
+     * Prints all subscriptions in the repository
+     *
+     */
+    private void printAllSubscriptions() {
+        Future<String> resultFuture = socketClientController.getAllSubscriptions();
+        try{
+            String result = resultFuture.get();
+            System.out.println("The subscriptions are: ");
+            System.out.println(result.replaceAll(";", "\n"));
+        }catch (InterruptedException | ExecutionException e){
+            System.err.println("Something went wrong with the connection");
+        }
+    }
+
+    private void filterSubscriptionsByDuration() {
+        System.out.print("Enter duration: ");
+        Scanner scannerDuration = new Scanner(System.in);
+        String duration = scannerDuration.nextLine();
+
+        Future<String> resultFuture = socketClientController.filterSubscriptionByDuration(duration);
+        try{
+            String result = resultFuture.get();
+            System.out.println("The subscription with duration '" + duration + "' are: ");
+            System.out.println(result.replaceAll(";", "\n"));
+        }catch (InterruptedException | ExecutionException e){
+            System.err.println("Something went wrong with the connection");
+        }
+    }
+
+    private void filterSubscriptionsByType() {
+        System.out.print("Enter type: ");
+        Scanner scannerType = new Scanner(System.in);
+        String type = scannerType.nextLine();
+
+        Future<String> resultFuture = socketClientController.filterSubscriptionByType(type);
+        try{
+            String result = resultFuture.get();
+            System.out.println("The subscription of type '" + type + "' are: ");
+            System.out.println(result.replaceAll(";", "\n"));
+        }catch (InterruptedException | ExecutionException e){
+            System.err.println("Something went wrong with the connection");
+        }
+    }
+
+    /**
+     * Reads a subscription from the keyboard.
+     *
+     * @return an {@code Subscription} - null if the data was not valid, otherwise returns the entity.
+     */
+    private String readSubscription() {
+        System.out.println("Read Subscription {Type, Price, Duration}");
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String type = bufferRead.readLine();
+            String price = bufferRead.readLine();
+            String duration = bufferRead.readLine();
+
+            return type + ";" + price + ";" + duration;
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Reads a subscription from the keyboard for update.
+     *
+     * @return an {@code Subscription} - null if the data was not valid, otherwise returns the entity.
+     */
+    private String readSubscriptionUpdate() {
+        System.out.println("Read Subscription {id, Type, Price, Duration}");
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String id = bufferRead.readLine();
+            String type = bufferRead.readLine();
+            String price = bufferRead.readLine();
+            String duration = bufferRead.readLine();
+
+            return id + ";" + type + ";" + price + ";" + duration;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Reads a subscription ID from the keyboard.
+     *
+     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
+     */
+    private String readSubscriptionID() {
+        System.out.println("Read Subscription ID {id}");
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            return bufferRead.readLine();
+        }
+        catch (IOException e) {
+            return null;
+        }
+    }
+
 ////`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
 //    /**
 //     * Adds the contract that has been read from console

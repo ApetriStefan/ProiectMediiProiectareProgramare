@@ -39,6 +39,36 @@ public class Handlers {
             Future<String> res = socketController.filterClientsByCnp(request.getBody());
             return addHandlerTry(res);
         });
+        //addSubscription
+        tcpServer.addHandler(SocketController.ADD_SUBSCRIPTION, request -> {
+            Future<String> res = socketController.addSubscription(request.getBody());
+            return addHandlerTry(res);
+        });
+        //deleteSubscription
+        tcpServer.addHandler(SocketController.DELETE_SUBSCRIPTION, request -> {
+            Future<String> res = socketController.deleteSubscription(request.getBody());
+            return addHandlerTry(res);
+        });
+        //updateSubscription
+        tcpServer.addHandler(SocketController.UPDATE_SUBSCRIPTION, request -> {
+            Future<String> res = socketController.updateSubscription(request.getBody());
+            return addHandlerTry(res);
+        });
+        //getAllSubscriptions
+        tcpServer.addHandler(SocketController.GET_ALL_SUBSCRIPTIONS, request -> {
+            Future<String> res = socketController.getAllSubscriptions();
+            return addHandlerTry(res);
+        });
+        //filterSubscriptionsByDuration
+        tcpServer.addHandler(SocketController.FILTER_SUBSCRIPTION_BY_DURATION, request -> {
+            Future<String> res = socketController.filterSubscriptionByDuration(request.getBody());
+            return addHandlerTry(res);
+        });
+        //filterSubscriptionsByType
+        tcpServer.addHandler(SocketController.FILTER_SUBSCRIPTION_BY_TYPE, request -> {
+            Future<String> res = socketController.filterSubscriptionByType(request.getBody());
+            return addHandlerTry(res);
+        });
     }
 
     private static Message addHandlerTry(Future<String> res) {

@@ -3,11 +3,14 @@ package intrusii.server.Controller;
 import intrusii.common.SocketController;
 import intrusii.common.SocketException;
 import intrusii.server.Domain.Client;
+import intrusii.server.Domain.Subscription;
+import intrusii.server.Domain.SubscriptionType;
 import intrusii.server.Domain.Validators.ValidatorException;
 import intrusii.server.Service.ClientService;
 import intrusii.server.Service.ContractService;
 import intrusii.server.Service.SubscriptionService;
 import intrusii.server.Utility.ClientUtil;
+import intrusii.server.Utility.SubscriptionUtil;
 
 import java.util.HashSet;
 import java.util.List;
@@ -101,6 +104,77 @@ public class SocketServerController implements SocketController {
     }
 
 //`````````````````````````````````````````````````Subscription`````````````````````````````````````````````````//
+    @Override
+    public Future<String> addSubscription(String subscription) {
+
+        return executorService.submit( () -> {
+            try{
+                Subscription subscriptionObj = SubscriptionUtil.StringToSubscription(subscription);
+                subscriptionService.addSubscription(subscriptionObj);
+                return "Subscription successfully added";
+            }catch (SocketException | ValidatorException e) {
+                return e.getMessage();
+            }
+        });
+    }
+
+    @Override
+    public Future<String> deleteSubscription(String id) {
+
+        return executorService.submit( () -> {
+            try{
+                Long idLong = Long.parseLong(id);
+                contractService.deleteContractsBySubscriptionID(idLong);
+                subscriptionService.deleteSubscription(idLong);
+                return "Subscription successfully deleted";
+            }catch (SocketException |ValidatorException | NumberFormatException e){
+                return e.getMessage();
+            }
+        });
+    }
+
+    @Override
+    public Future<String> updateSubscription(String subscription) {
+
+        return executorService.submit( () -> {
+            try{
+                Subscription subscriptionObj = SubscriptionUtil.StringToSubscriptionWithId(subscription);
+                subscriptionService.updateSubscription(subscriptionObj);
+                return "Subscription successfully updated";
+            }catch (SocketException | ValidatorException e){
+                return e.getMessage();
+            }
+        });
+    }
+
+    @Override
+    public Future<String> getAllSubscriptions() {
+
+        return executorService.submit( () -> {
+            Set<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
+            return SubscriptionUtil.SetToString(subscriptions);
+        });
+    }
+
+    @Override
+    public Future<String> filterSubscriptionByDuration(String duration) {
+
+        return executorService.submit( () -> {
+            List<Subscription> subscriptionList = subscriptionService.filterByDuration(Integer.parseInt(duration));
+            Set<Subscription> subscriptionSet = new HashSet<>(subscriptionList);
+            return SubscriptionUtil.SetToString(subscriptionSet);
+        });
+    }
+
+    @Override
+    public Future<String> filterSubscriptionByType(String type) {
+
+        return executorService.submit( () -> {
+            List<Subscription> subscriptionList = subscriptionService.filterByType(type);
+            Set<Subscription> subscriptionSet = new HashSet<>(subscriptionList);
+            return SubscriptionUtil.SetToString(subscriptionSet);
+        });
+    }
 
 //`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
 }
