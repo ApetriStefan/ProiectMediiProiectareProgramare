@@ -1,23 +1,20 @@
 package intrusii.client.UI;
 
 import intrusii.common.SocketController;
-import intrusii.common.SocketException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class Console {
-    private SocketController socketCtrl;
+    private final SocketController socketClientController;
 
     public Console(SocketController socketCtrl) {
-        this.socketCtrl = socketCtrl;
+        this.socketClientController = socketCtrl;
     }
 
     public void runConsole() {
@@ -69,21 +66,21 @@ public class Console {
                 case "1":
                     addClient();
                     break;
-//                case "2":
-//                    deleteClient();
-//                    break;
-//                case "3":
-//                    updateClient();
-//                    break;
-//                case "4":
-//                    printAllClients();
-//                    break;
-//                case "5":
-//                    filterClientsByName();
-//                    break;
-//                case "6":
-//                    filterClientsByCNP();
-//                    break;
+                case "2":
+                    deleteClient();
+                    break;
+                case "3":
+                    updateClient();
+                    break;
+                case "4":
+                    printAllClients();
+                    break;
+                case "5":
+                    filterClientsByName();
+                    break;
+                case "6":
+                    filterClientsByCnp();
+                    break;
                 default:
                     System.err.println("Invalid command");
                     try {
@@ -214,80 +211,101 @@ public class Console {
     private void addClient() {
         String client = readClient();
         if (client == null)
-            System.out.println("Please insert valid data");
+            System.err.println("Please insert valid data");
         else {
-            Future<String> resultFuture = socketCtrl.addClient(client);
+            Future<String> resultFuture = socketClientController.addClient(client);
             try {
                 String result = resultFuture.get();
                 System.out.println(result);
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                System.err.println("Something went wrong with the connection");
             }
+        }
     }
 
-}
+    /**
+     * Deletes a client by an ID that has been read from console.
+     *
+     */
+    private void deleteClient() {
+        String id = readClientID();
+        if (id == null) {
+            System.err.println("Invalid ID");
+        }
+        else{
+            Future<String> resultFuture = socketClientController.deleteClient(id);
+            try{
+                String result = resultFuture.get();
+                System.out.println(result);
+            }catch (InterruptedException | ExecutionException e) {
+                System.err.println("Something went wrong with the connection");
+            }
+        }
+    }
 
-//    /**
-//     * Deletes a client by an ID that has been read from console.
-//     *
-//     */
-//    private void deleteClient() {
-//        Long id = readClientID();
-//        if (id == null || id < 0) {
-//            System.out.println("Given id is not valid");
-//            return;
-//        }
-//        try {
-//            socketCtrl.deleteClient(id);
-//            //System.out.println("Client successfully deleted");
-//        } catch (ValidatorException | IllegalArgumentException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * Update the Client that has been read from console
-//     */
-//    private void updateClient() {
-//        System.out.println("Input the ID of the client to be updated and the new client");
-//        Client client = readClientUpdate();
-//        if (client == null) {
-//            System.out.println("Please insert valid data");
-//            return;
-//        }
-//        try {
-//            socketCtrl.updateClient(client);
-//            //System.out.println("Client successfully updated");
-//        } catch (ValidatorException | IllegalArgumentException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * Prints all clients in the repository
-//     *
-//     */
-//    private void printAllClients() {
-//        Set<Client> clients = socketCtrl.getAllClients();
-//        System.out.println("The clients are:");
-//        clients.forEach(System.out::println);
-//    }
-//
-//    private void filterClientsByName() {
-//        System.out.print("Enter name: ");
-//        Scanner scannerName = new Scanner(System.in);
-//        String name = scannerName.nextLine();
-//        System.out.println("The clients containing '" + name + "' are: ");
-//        socketCtrl.filterClientsByName(name).forEach(System.out::println);
-//    }
-//
-//    private void filterClientsByCNP() {
-//        System.out.print("Enter CNP: ");
-//        Scanner scannerCnp = new Scanner(System.in);
-//        String cnp = scannerCnp.nextLine();
-//        System.out.println("The clients with this CNP are: ");
-//        socketCtrl.filterClientsByCnp(cnp).forEach(System.out::println);
-//    }
+    /**
+     * Update the Client that has been read from console
+     */
+    private void updateClient() {
+        String client = readClientUpdate();
+        if (client == null) {
+            System.err.println("Invalid input");
+        }
+        else{
+            Future<String> resultFuture = socketClientController.updateClient(client);
+            try {
+                String result = resultFuture.get();
+                System.out.println(result);
+            } catch (InterruptedException | ExecutionException e) {
+                System.err.println("Something went wrong with the connection");
+            }
+        }
+    }
+
+    /**
+     * Prints all clients in the repository
+     *
+     */
+    private void printAllClients() {
+        Future<String> resultFuture = socketClientController.getAllClients();
+        try{
+            String result = resultFuture.get();
+            System.out.println("The clients are: ");
+            System.out.println(result.replaceAll(";", "\n"));
+        }catch (InterruptedException | ExecutionException e){
+            System.err.println("Something went wrong with the connection");
+        }
+    }
+
+    private void filterClientsByName() {
+        System.out.print("Enter name: ");
+        Scanner scannerName = new Scanner(System.in);
+        String name = scannerName.nextLine();
+
+        Future<String> resultFuture = socketClientController.filterClientsByName(name);
+        try{
+            String result = resultFuture.get();
+            System.out.println("The clients containing '" + name + "' are: ");
+            System.out.println(result.replaceAll(";", "\n"));
+        }catch (InterruptedException | ExecutionException e){
+            System.err.println("Something went wrong with the connection");
+        }
+    }
+
+    private void filterClientsByCnp() {
+        System.out.print("Enter CNP: ");
+        Scanner scannerName = new Scanner(System.in);
+        String cnp = scannerName.nextLine();
+
+        Future<String> resultFuture = socketClientController.filterClientsByCnp(cnp);
+        try{
+            String result = resultFuture.get();
+            System.out.println("The client with this cnp is: ");
+            System.out.println(result.replaceAll(";", "\n"));
+        }catch (InterruptedException | ExecutionException e){
+            System.err.println("Something went wrong with the connection");
+        }
+    }
 
     /**
      * Reads a client from the keyboard.
@@ -305,53 +323,47 @@ public class Console {
 
             return cnp + ";" + name + ";" + email + ";" + address;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            return null;
         }
-        return null;
     }
 
-//    /**
-//     * Reads a client from the keyboard for update.
-//     *
-//     * @return an {@code Client} - null if the data was not valid, otherwise returns the entity.
-//     */
-//    private Client readClientUpdate() {
-//        System.out.println("Read Client {id, CNP, Name, Email, Address}");
-//        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            Long id = Long.valueOf(bufferRead.readLine());
-//            String CNP = bufferRead.readLine();
-//            String name = bufferRead.readLine();
-//            String email = bufferRead.readLine();
-//            String address = bufferRead.readLine();
-//
-//            Client client = new Client(CNP, name, email, address);
-//            client.setId(id);
-//
-//            return client;
-//        } catch (IOException | NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Reads a client ID from the keyboard.
-//     *
-//     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
-//     */
-//    private Long readClientID() {
-//        System.out.println("Read Client ID {id}");
-//        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            return Long.valueOf(bufferRead.readLine());
-//        }
-//        catch (IOException | NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-//
+    /**
+     * Reads a client ID from the keyboard.
+     *
+     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
+     */
+    private String readClientID() {
+        System.out.println("Read Client ID {id}");
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            return bufferRead.readLine();
+        }
+        catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Reads a client from the keyboard for update.
+     *
+     * @return an {@code Client} - null if the data was not valid, otherwise returns the entity.
+     */
+    private String readClientUpdate() {
+        System.out.println("Read Client {ID, CNP, Name, Email, Address}");
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String id = bufferRead.readLine();
+            String cnp = bufferRead.readLine();
+            String name = bufferRead.readLine();
+            String email = bufferRead.readLine();
+            String address = bufferRead.readLine();
+
+            return id + ";" + cnp + ";" + name + ";" + email + ";" + address;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
 ////`````````````````````````````````````````````````Subscription`````````````````````````````````````````````````//
 //    /**
 //     * Adds the Subscription that has been read from console

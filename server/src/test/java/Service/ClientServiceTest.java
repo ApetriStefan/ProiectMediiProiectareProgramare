@@ -27,7 +27,7 @@ public class ClientServiceTest {
         c1.setId(1L);
         c2.setId(2L);
         clientValidator = new ClientValidator();
-        clientRepository = new ClientFileRepository(clientValidator, "./data/Tests/ClientsServiceTest");
+        clientRepository = new ClientFileRepository(clientValidator, "resources/data/ServiceFile/ClientsServiceTest");
         clientService = new ClientService(clientRepository);
     }
 

@@ -26,7 +26,7 @@ public class SubscriptionFileRepositoryTest {
         s1.setId(1L);
         s2.setId(5L);
         SubscriptionValidator validator = new SubscriptionValidator();
-        repo = new SubscriptionFileRepository(validator, "./data/Tests/SubscriptionsFileTest");
+        repo = new SubscriptionFileRepository(validator, "resources/data/File/SubscriptionsFileTest");
     }
 
     @After

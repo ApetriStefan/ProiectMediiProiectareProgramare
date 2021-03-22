@@ -26,7 +26,7 @@ public class ClientXMLRepositoryTest
         c1.setId(1L);
         c2.setId(2L);
         ClientValidator validator = new ClientValidator();
-        repo = new ClientXMLRepository(validator, "./data/Tests/ClientsXMLTest");
+        repo = new ClientXMLRepository(validator, "resources/data/XML/ClientsXMLTest");
     }
     @After
     public void tearDown() throws Exception {

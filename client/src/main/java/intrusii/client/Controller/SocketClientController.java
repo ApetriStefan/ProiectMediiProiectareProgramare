@@ -18,38 +18,40 @@ public class SocketClientController implements SocketController {
 
     @Override
     public Future<String> addClient(String client) {
-        return executorService.submit( () -> {
-            Message request = new Message(SocketController.ADD_CLIENT, client);
-            Message response = tcpClient.sendAndReceive(request);
-
-            String result = response.getBody();
-
-            return result;
-        });
+        return genericFunction(SocketController.ADD_CLIENT, client);
     }
 
     @Override
     public Future<String> deleteClient(String id) {
-        return null;
+        return genericFunction(SocketController.DELETE_CLIENT, id);
     }
 
     @Override
     public Future<String> updateClient(String client) {
-        return null;
+        return genericFunction(SocketController.UPDATE_CLIENT, client);
     }
 
     @Override
     public Future<String> getAllClients() {
-        return null;
+        return genericFunction(SocketController.GET_ALL_CLIENTS, null);
     }
 
     @Override
     public Future<String> filterClientsByName(String name) {
-        return null;
+        return genericFunction(SocketController.FILTER_CLIENTS_BY_NAME, name);
     }
 
     @Override
     public Future<String> filterClientsByCnp(String cnp) {
-        return null;
+        return genericFunction(SocketController.FILTER_CLIENTS_BY_CNP, cnp);
+    }
+
+    public Future<String> genericFunction(String command, String parameter){
+        return executorService.submit( () -> {
+            Message request = new Message(command, parameter);
+            Message response = tcpClient.sendAndReceive(request);
+
+            return response.getBody();
+        });
     }
 }

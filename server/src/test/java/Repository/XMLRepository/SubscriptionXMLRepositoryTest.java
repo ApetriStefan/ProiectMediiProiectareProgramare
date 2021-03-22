@@ -27,7 +27,7 @@ public class SubscriptionXMLRepositoryTest
         s1.setId(1L);
         s2.setId(2L);
         SubscriptionValidator validator = new SubscriptionValidator();
-        repo = new SubscriptionXMLRepository(validator, "./data/Tests/SubscriptionsXMLTest");
+        repo = new SubscriptionXMLRepository(validator, "resources/data/XML/SubscriptionsXMLTest");
     }
     @After
     public void tearDown() throws Exception {

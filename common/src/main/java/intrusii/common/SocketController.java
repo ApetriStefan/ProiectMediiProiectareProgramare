@@ -21,4 +21,10 @@ public interface SocketController {
     Future<String> filterClientsByName(String name);
     Future<String> filterClientsByCnp(String cnp);
 
+//`````````````````````````````````````````````````Subscription`````````````````````````````````````````````````//
+
+
+//`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
+
+
 }
