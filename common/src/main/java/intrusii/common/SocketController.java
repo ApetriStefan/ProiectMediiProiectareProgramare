@@ -20,6 +20,12 @@ public interface SocketController {
     String FILTER_SUBSCRIPTION_BY_DURATION= "filterSubscriptionByDuration";
     String FILTER_SUBSCRIPTION_BY_TYPE= "filterSubscriptionByType";
 
+    String ADD_CONTRACT = "addContract";
+    String DELETE_CONTRACT = "deleteContract";
+    String UPDATE_CONTRACT = "updateContract";
+    String GET_ALL_CONTRACTS = "getAllContracts";
+    String FILTER_EXPIRED_CONTRACTS= "filterExpiredContracts";
+
 
 
 //`````````````````````````````````````````````````Client`````````````````````````````````````````````````//
@@ -41,5 +47,10 @@ public interface SocketController {
 
 //`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
 
+    Future<String> addContract(String contract);
+    Future<String> deleteContract(String id);
+    Future<String> updateContract(String contract);
+    Future<String> getAllContracts();
+    Future<String> filterExpiredContracts();
 
 }

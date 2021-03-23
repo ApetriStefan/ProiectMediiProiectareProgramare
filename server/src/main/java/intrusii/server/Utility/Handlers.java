@@ -69,6 +69,33 @@ public class Handlers {
             Future<String> res = socketController.filterSubscriptionByType(request.getBody());
             return addHandlerTry(res);
         });
+
+
+        //addContract
+        tcpServer.addHandler(SocketController.ADD_CONTRACT, request -> {
+            Future<String> res = socketController.addContract(request.getBody());
+            return addHandlerTry(res);
+        });
+        //deleteContract
+        tcpServer.addHandler(SocketController.DELETE_CONTRACT, request -> {
+            Future<String> res = socketController.deleteContract(request.getBody());
+            return addHandlerTry(res);
+        });
+        //updateContract
+        tcpServer.addHandler(SocketController.UPDATE_CONTRACT, request -> {
+            Future<String> res = socketController.updateContract(request.getBody());
+            return addHandlerTry(res);
+        });
+        //getAllContracts
+        tcpServer.addHandler(SocketController.GET_ALL_CONTRACTS, request -> {
+            Future<String> res = socketController.getAllContracts();
+            return addHandlerTry(res);
+        });
+        //filterExpiredContracts
+        tcpServer.addHandler(SocketController.FILTER_EXPIRED_CONTRACTS, request -> {
+            Future<String> res = socketController.filterExpiredContracts();
+            return addHandlerTry(res);
+        });
     }
 
     private static Message addHandlerTry(Future<String> res) {

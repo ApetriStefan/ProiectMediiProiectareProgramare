@@ -39,9 +39,9 @@ public class Console {
                 case "2":
                     subscriptionMenu();
                     break;
-//                case "3":
-//                    contractMenu();
-//                    break;
+                case "3":
+                    contractMenu();
+                    break;
                 default:
                     System.err.println("Invalid command");
                     try {
@@ -126,40 +126,40 @@ public class Console {
             }
         }
     }
-//
-//    private void contractMenu() {
-//        String option;
-//        while(true){
-//            printContractMenu();
-//            Scanner scannerOption = new Scanner(System.in);
-//            System.out.print(">> ");
-//            option = scannerOption.nextLine();
-//            switch (option) {
-//                case "0":
-//                    return;
-//                case "1":
-//                    addContract();
-//                    break;
-//                case "2":
-//                    deleteContract();
-//                    break;
-//                case "3":
-//                    updateContract();
-//                    break;
-//                case "4":
-//                    printAllContracts();
-//                    break;
-//                case "5":
-//                    filterExpiredContracts();
-//                    break;
-//                default:
-//                    System.err.println("Invalid command");
-//                    try {
-//                        Thread.sleep(100);
-//                    } catch (InterruptedException ignored){}
-//            }
-//        }
-//    }
+
+    private void contractMenu() {
+        String option;
+        while(true){
+            printContractMenu();
+            Scanner scannerOption = new Scanner(System.in);
+            System.out.print(">> ");
+            option = scannerOption.nextLine();
+            switch (option) {
+                case "0":
+                    return;
+                case "1":
+                    addContract();
+                    break;
+                case "2":
+                    deleteContract();
+                    break;
+                case "3":
+                    updateContract();
+                    break;
+                case "4":
+                    printAllContracts();
+                    break;
+                case "5":
+                    filterExpiredContracts();
+                    break;
+                default:
+                    System.err.println("Invalid command");
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ignored){}
+            }
+        }
+    }
 
     //`````````````````````````````````````````````````Print Menu`````````````````````````````````````````````````//
     private void printMainMenu() {
@@ -522,133 +522,148 @@ public class Console {
         }
     }
 
-////`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
-//    /**
-//     * Adds the contract that has been read from console
-//     */
-//    private void addContract() {
-//        Contract contract = readContract();
-//        if (contract == null || contract.getId() < 0) {
-//            System.out.println("Please insert valid data");
-//            return;
-//        }
-//        try {
-//            socketCtrl.addContract(contract);
-//            //System.out.println("Contract successfully added");
-//        } catch (ValidatorException | IllegalArgumentException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * Deletes a contract by an ID that has been read from console.
-//     *
-//     */
-//    private void deleteContract() {
-//        Long id = readContractID();
-//        if (id == null || id < 0) {
-//            System.out.println("The given ID is not valid");
-//            return;
-//        }
-//        try {
-//            socketCtrl.deleteContract(id);
-//            //System.out.println("Contract successfully deleted");
-//        } catch (ValidatorException | IllegalArgumentException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * Updates the contract that has been read from console
-//     */
-//    private void updateContract() {
-//        Contract contract = readContractForUpdate();
-//        if (contract == null || contract.getId() < 0) {
-//            System.out.println("Please insert valid data");
-//            return;
-//        }
-//        try{
-//            socketCtrl.updateContract(contract);
-//            //System.out.println("Contract successfully updated");
-//        }catch (ValidatorException | IllegalArgumentException e){
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * Prints all contracts in the repository
-//     *
-//     */
-//    private void printAllContracts() {
-//        Set<Contract> contracts = socketCtrl.getAllContracts();
-//        System.out.println("The contracts are:");
-//        contracts.forEach(System.out::println);
-//    }
-//
-//    private void filterExpiredContracts(){
-//        System.out.println("Active contracts:");
-//        socketCtrl.filterActiveContracts().forEach(System.out::println);
-//    }
-//
-//    /**
-//     * Reads a contract from the keyboard.
-//     *
-//     * @return an {@code Contract} - null if the data was not valid, otherwise returns the entity.
-//     */
-//    private Contract readContract() {
-//        System.out.println("Read Contract {Client ID, Subscription ID, Date<yyyy-mm-dd>}");
-//        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            Long clientID = Long.parseLong(bufferRead.readLine());
-//            Long subscriptionID = Long.parseLong(bufferRead.readLine());
-//            LocalDate date = LocalDate.parse(bufferRead.readLine());
-//
-//            Contract contract = new Contract(clientID,subscriptionID, date);
-//            contract.setId(1L);
-//
-//            return contract;
-//        } catch (IOException | NumberFormatException | DateTimeParseException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Reads a contract ID from the keyboard.
-//     *
-//     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
-//     */
-//    private Long readContractID() {
-//        System.out.println("Read Contract ID {id}");
-//        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            return Long.valueOf(bufferRead.readLine());
-//        }
-//        catch (IOException | NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Reads a contract ID and a client ID from the keyboard (because the client is the only field that is allowed to be modified).
-//     *
-//     * @return an {@code Contract} - null if the data was not valid, otherwise returns the entity.
-//     */
-//    private Contract readContractForUpdate() {
-//        System.out.println("Update Contract {id, Client ID}");
-//        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-//        try {
-//            Long id = Long.valueOf(bufferRead.readLine());// ...
-//            Long clientID = Long.parseLong(bufferRead.readLine());
-//
-//            Contract contract = new Contract(clientID);
-//            contract.setId(id);
-//
-//            return contract;
-//        } catch (IOException | NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
+//`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
+    /**
+     * Adds the contract that has been read from console
+     */
+    private void addContract()
+    {
+        String contract = readContract();
+        if (contract == null) {
+            System.err.println("Please insert valid data");
+        }
+        else {
+            Future<String> resultFuture = socketClientController.addContract(contract);
+            try {
+                String result = resultFuture.get();
+                System.out.println(result);
+            } catch (InterruptedException | ExecutionException e) {
+                System.err.println("Something went wrong with the connection");
+            }
+        }
+    }
+
+    /**
+     * Deletes a contract by an ID that has been read from console.
+     *
+     */
+    private void deleteContract() {
+        String id = readContractID();
+        if (id == null)
+        {
+            System.err.println("Invalid ID");
+        }
+        else{
+            Future<String> resultFuture = socketClientController.deleteContract(id);
+            try{
+                String result = resultFuture.get();
+                System.out.println(result);
+            }catch (InterruptedException | ExecutionException e) {
+                System.err.println("Something went wrong with the connection");
+            }
+        }
+    }
+
+    /**
+     * Updates the contract that has been read from console
+     */
+    private void updateContract() {
+        String contract = readContractForUpdate();
+        if (contract == null) {
+            System.err.println("Invalid input");
+        }
+        else{
+            Future<String> resultFuture = socketClientController.updateContract(contract);
+            try {
+                String result = resultFuture.get();
+                System.out.println(result);
+            } catch (InterruptedException | ExecutionException e) {
+                System.err.println("Something went wrong with the connection");
+            }
+        }
+    }
+
+
+    /**
+     * Prints all contracts in the repository
+     *
+     */
+    private void printAllContracts() {
+        Future<String> resultFuture = socketClientController.getAllContracts();
+        try{
+            String result = resultFuture.get();
+            System.out.println("The subscriptions are: ");
+            System.out.println(result.replaceAll(";", "\n"));
+        }catch (InterruptedException | ExecutionException e){
+            System.err.println("Something went wrong with the connection");
+        }
+    }
+
+    private void filterExpiredContracts()
+    {
+        System.out.println("Active contracts:");
+        Future<String> resultFuture = socketClientController.filterExpiredContracts();
+        try{
+            String result = resultFuture.get();
+            System.out.println("The contracts are: ");
+            System.out.println(result.replaceAll(";", "\n"));
+        }catch (InterruptedException | ExecutionException e){
+            System.err.println("Something went wrong with the connection");
+        }
+    }
+
+    /**
+     * Reads a contract from the keyboard.
+     *
+     * @return an {@code Contract} - null if the data was not valid, otherwise returns the entity.
+     */
+    private String readContract() {
+        System.out.println("Read Contract {Client ID, Subscription ID, Date<yyyy-mm-dd>}");
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String clientId = bufferRead.readLine();
+            String subscriptionId = bufferRead.readLine();
+            String date = bufferRead.readLine();
+            return clientId+";"+subscriptionId+";"+date;
+        } catch (IOException | NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Reads a contract ID from the keyboard.
+     *
+     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
+     */
+    private String readContractID() {
+        System.out.println("Read Contract ID {id}");
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            return bufferRead.readLine();
+        }
+        catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Reads a contract ID and a client ID from the keyboard (because the client is the only field that is allowed to be modified).
+     *
+     * @return an {@code Contract} - null if the data was not valid, otherwise returns the entity.
+     */
+    private String readContractForUpdate()
+    {
+        System.out.println("Update Contract {id, Client ID}");
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String id = bufferRead.readLine();
+            String clientId = bufferRead.readLine();
+            return id+";"+clientId;
+
+        } catch (IOException | NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 }

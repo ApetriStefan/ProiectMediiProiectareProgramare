@@ -79,6 +79,31 @@ public class SocketClientController implements SocketController {
     }
 
 //`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
+    @Override
+    public Future<String> addContract(String contract) {
+        return genericFunction(SocketController.ADD_CONTRACT, contract);
+    }
+
+    @Override
+    public Future<String> deleteContract(String id) {
+        return genericFunction(SocketController.DELETE_CONTRACT, id);
+    }
+
+    @Override
+    public Future<String> updateContract(String contract) {
+        return genericFunction(SocketController.UPDATE_CONTRACT, contract);
+    }
+
+    @Override
+    public Future<String> getAllContracts() {
+        return genericFunction(SocketController.GET_ALL_CONTRACTS, null);
+    }
+
+    @Override
+    public Future<String> filterExpiredContracts() {
+        return genericFunction(SocketController.FILTER_EXPIRED_CONTRACTS, null);
+    }
+
 
     public Future<String> genericFunction(String command, String parameter){
         return executorService.submit( () -> {
