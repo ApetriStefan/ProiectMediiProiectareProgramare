@@ -25,7 +25,7 @@ public class ClientFileRepositoryTest {
         c1.setId(1L);
         c2.setId(5L);
         ClientValidator validator = new ClientValidator();
-        repo = new ClientFileRepository(validator, "resources/data/File/SubscriptionsFileTest");
+        repo = new ClientFileRepository(validator, "/data/Tests/File/SubscriptionsFileTest");
     }
 
     @After

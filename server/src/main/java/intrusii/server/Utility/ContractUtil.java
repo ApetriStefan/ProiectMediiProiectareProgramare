@@ -5,8 +5,12 @@ import intrusii.server.Domain.Client;
 import intrusii.server.Domain.Contract;
 import intrusii.server.Domain.Subscription;
 import intrusii.server.Domain.SubscriptionType;
+import intrusii.server.Service.ClientService;
+import intrusii.server.Service.SubscriptionService;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Set;
 
 public class ContractUtil {
@@ -19,7 +23,13 @@ public class ContractUtil {
 
             return new Contract(Long.valueOf(clientId), Long.valueOf(subscriptionId), LocalDate.parse(date));
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new SocketException("Something went wrong! Check the input");
+            throw new SocketException("Something went wrong! Not enough attributes");
+        }
+        catch (NumberFormatException e){
+            throw new SocketException("Incorrect type for the attributes");
+        }
+        catch (DateTimeParseException e){
+            throw new SocketException("Incorrect date format");
         }
     }
 
@@ -28,20 +38,23 @@ public class ContractUtil {
             String[] arguments = contract.split(";");
             String id = arguments[0];
             String clientId = arguments[1];
-            String subscriptionId = arguments[2];
-            String date = arguments[3];
 
             Long idLong = Long.parseLong(id);
-            Contract contractObj = new Contract(Long.valueOf(clientId), Long.valueOf(subscriptionId), LocalDate.parse(date));
+            Contract contractObj = new Contract(Long.valueOf(clientId));
             contractObj.setId(idLong);
             return contractObj;
-        } catch (ArrayIndexOutOfBoundsException |  NumberFormatException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             throw new SocketException("Something went wrong! Check the input");
+        }
+        catch (NumberFormatException e){
+            throw new SocketException("Incorrect type for the attributes");
+        }
+        catch (DateTimeParseException e){
+            throw new SocketException("Incorrect date format");
         }
     }
 
-    public static String SetToString(Set<Contract> contracts)
-    {
-        return contracts.stream().map(Contract::toString).reduce("", (contractsString, contract) -> contractsString + ";" + contract);
+    public static String SetToString(Set<Contract> contracts, ClientService clientService, SubscriptionService subscriptionService) {
+        return contracts.stream().map(contract -> "*" + clientService.getClientByID(contract.getClientId()) + ";" + subscriptionService.getSubscriptionByID(contract.getSubscriptionId()) + ";" + "Date{" +  contract.getDate() + "};").reduce("", (contractString, contract) ->  contractString + ";" + contract);
     }
 }

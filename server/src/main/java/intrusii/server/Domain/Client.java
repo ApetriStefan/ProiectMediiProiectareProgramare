@@ -69,10 +69,11 @@ public class Client extends BaseEntity<Long> {
     @Override
     public String toString() {
         return "Client{" +
-                "CNP='" + cnp + '\'' +
-                ", name='" + name + '\'' +
-                ", email=" + email + '\''+
+                super.toString() +
+                ", CNP=" + cnp +
+                ", name=" + name +
+                ", email=" + email +
                 ", address=" + address+
-                "} " + super.toString();
+                "} ";
     }
 }

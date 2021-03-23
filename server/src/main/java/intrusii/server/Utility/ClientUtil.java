@@ -17,7 +17,7 @@ public class ClientUtil {
 
             return new Client(cnp, name, email, address);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new SocketException("Something went wrong! Check the input");
+            throw new SocketException("Something went wrong! Not enough attributes");
         }
     }
 
@@ -36,7 +36,7 @@ public class ClientUtil {
             clientObj.setId(idLong);
             return clientObj;
         } catch (ArrayIndexOutOfBoundsException |  NumberFormatException e) {
-            throw new SocketException("Something went wrong! Check the input");
+            throw new SocketException("Something went wrong! Not enough attributes");
         }
     }
 

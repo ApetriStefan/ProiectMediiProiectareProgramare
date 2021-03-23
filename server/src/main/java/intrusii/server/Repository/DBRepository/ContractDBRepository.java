@@ -29,7 +29,7 @@ public class ContractDBRepository implements Repository<Long, Contract> {
     @Override
     public Optional<Contract> findOne(Long id){
         if(id == null){
-            throw new IllegalArgumentException("id must not be null");
+            throw new IllegalArgumentException("Id must not be null");
         }
 
         String sql = "SELECT * FROM Contract WHERE id = ?";
@@ -99,7 +99,7 @@ public class ContractDBRepository implements Repository<Long, Contract> {
     @Override
     public Optional<Contract> delete(Long id){
         if (id == null) {
-            throw new IllegalArgumentException("id must not be null");
+            throw new IllegalArgumentException("Id must not be null");
         }
 
         findOne(id).orElseThrow(() -> new ContractException("No contract with this id"));
@@ -124,6 +124,8 @@ public class ContractDBRepository implements Repository<Long, Contract> {
         }
 
         findOne(contract.getId()).orElseThrow(() -> new ContractException("No contract with this id"));
+
+        validator.validate(contract);
 
         String sql = "UPDATE Contract SET clientId = ?, subscriptionId = ?, date = ? where id = ?";
         try (var connection = DriverManager.getConnection(url, user, password);

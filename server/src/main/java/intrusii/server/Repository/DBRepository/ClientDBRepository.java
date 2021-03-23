@@ -27,7 +27,7 @@ public class ClientDBRepository implements Repository<Long, Client> {
     @Override
     public Optional<Client> findOne(Long id){
         if(id == null){
-            throw new IllegalArgumentException("id must not be null");
+            throw new IllegalArgumentException("Id must not be null");
         }
 
         String sql = "SELECT * FROM Client WHERE id = ?";
@@ -100,7 +100,7 @@ public class ClientDBRepository implements Repository<Long, Client> {
     @Override
     public Optional<Client> delete(Long id){
         if (id == null) {
-            throw new IllegalArgumentException("id must not be null");
+            throw new IllegalArgumentException("Id must not be null");
         }
 
         findOne(id).orElseThrow(() -> new ContractException("No client with this id"));
@@ -121,10 +121,12 @@ public class ClientDBRepository implements Repository<Long, Client> {
     @Override
     public Optional<Client> update(Client client){
         if (client == null) {
-            throw new IllegalArgumentException("client must not be null");
+            throw new IllegalArgumentException("Client must not be null");
         }
 
         findOne(client.getId()).orElseThrow(() -> new ContractException("No client with this id"));
+
+        validator.validate(client);
 
         String sql = "UPDATE Client SET cnp = ? , name = ?, email = ?, address = ? WHERE id = ?";
         try (var connection = DriverManager.getConnection(url, user, password);

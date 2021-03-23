@@ -592,7 +592,7 @@ public class Console {
         Future<String> resultFuture = socketClientController.getAllContracts();
         try{
             String result = resultFuture.get();
-            System.out.println("The subscriptions are: ");
+            System.out.println("The contracts are: ");
             System.out.println(result.replaceAll(";", "\n"));
         }catch (InterruptedException | ExecutionException e){
             System.err.println("Something went wrong with the connection");
