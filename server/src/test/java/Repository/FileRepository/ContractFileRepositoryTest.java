@@ -26,7 +26,7 @@ public class ContractFileRepositoryTest {
         c1.setId(1L);
         c2.setId(5L);
         ContractValidator validator = new ContractValidator();
-        repo = new ContractFileRepository(validator, "resources/data/File/ContractsFileTest");
+        repo = new ContractFileRepository(validator, "/data/Tests/File/ContractsFileTest");
     }
 
     @After

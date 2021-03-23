@@ -28,7 +28,7 @@ public class SubscriptionDBRepository implements Repository<Long, Subscription> 
     @Override
     public Optional<Subscription> findOne(Long id){
         if(id == null){
-            throw new IllegalArgumentException("id must not be null");
+            throw new IllegalArgumentException("Id must not be null");
         }
 
         String sql = "SELECT * FROM Subscription WHERE id = ?";
@@ -102,7 +102,7 @@ public class SubscriptionDBRepository implements Repository<Long, Subscription> 
     @Override
     public Optional<Subscription> delete(Long id){
         if (id == null) {
-            throw new IllegalArgumentException("id must not be null");
+            throw new IllegalArgumentException("Id must not be null");
         }
 
         findOne(id).orElseThrow(() -> new ContractException("No subscription with this id"));
@@ -123,10 +123,12 @@ public class SubscriptionDBRepository implements Repository<Long, Subscription> 
     @Override
     public Optional<Subscription> update(Subscription subscription){
         if (subscription == null) {
-            throw new IllegalArgumentException("subscription must not be null");
+            throw new IllegalArgumentException("Subscription must not be null");
         }
 
         findOne(subscription.getId()).orElseThrow(() -> new ContractException("No subscription with this id"));
+
+        validator.validate(subscription);
 
         String sql = "UPDATE Subscription SET type = ? , price = ?, duration = ? where id = ?";
         try (var connection = DriverManager.getConnection(url, user, password);

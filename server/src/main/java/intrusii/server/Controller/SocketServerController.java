@@ -5,7 +5,6 @@ import intrusii.common.SocketException;
 import intrusii.server.Domain.Client;
 import intrusii.server.Domain.Contract;
 import intrusii.server.Domain.Subscription;
-import intrusii.server.Domain.SubscriptionType;
 import intrusii.server.Domain.Validators.ValidatorException;
 import intrusii.server.Service.ClientService;
 import intrusii.server.Service.ContractService;
@@ -14,6 +13,7 @@ import intrusii.server.Utility.ClientUtil;
 import intrusii.server.Utility.ContractUtil;
 import intrusii.server.Utility.SubscriptionUtil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,8 +58,11 @@ public class SocketServerController implements SocketController {
                 contractService.deleteContractsByClientID(idLong);
                 clientService.deleteClient(idLong);
                 return "Client successfully deleted";
-            }catch (SocketException |ValidatorException | NumberFormatException e){
+            }catch (SocketException |ValidatorException e){
                 return e.getMessage();
+            }
+            catch (NumberFormatException e){
+                return "The id should be an integer";
             }
         });
     }
@@ -130,8 +133,11 @@ public class SocketServerController implements SocketController {
                 contractService.deleteContractsBySubscriptionID(idLong);
                 subscriptionService.deleteSubscription(idLong);
                 return "Subscription successfully deleted";
-            }catch (SocketException |ValidatorException | NumberFormatException e){
+            }catch (SocketException |ValidatorException e){
                 return e.getMessage();
+            }
+            catch (NumberFormatException e){
+                return "The id should be an integer";
             }
         });
     }
@@ -180,7 +186,6 @@ public class SocketServerController implements SocketController {
     }
 
 //`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
-
     @Override
     public Future<String> addContract(String contract) {
 
@@ -203,8 +208,11 @@ public class SocketServerController implements SocketController {
                 Long idLong = Long.parseLong(id);
                 contractService.deleteContract(idLong);
                 return "Contract successfully deleted";
-            }catch (SocketException |ValidatorException | NumberFormatException e){
+            }catch (SocketException |ValidatorException e){
                 return e.getMessage();
+            }
+            catch (NumberFormatException e){
+                return "The id should be an integer";
             }
         });
     }
@@ -228,19 +236,18 @@ public class SocketServerController implements SocketController {
 
         return executorService.submit( () -> {
             Set<Contract> contracts = contractService.getAllContracts();
-            return ContractUtil.SetToString(contracts);
+            return ContractUtil.SetToString(contracts, clientService, subscriptionService);
         });
     }
 
     @Override
-    public Future<String> filterExpiredContracts()
-    {
+    public Future<String> filterExpiredContracts() {
 
         return executorService.submit( () -> {
             Set<Contract> contracts = contractService.getAllContracts();
             List<Contract> contractList = contracts.stream().filter(c -> contractService.verifyActiveContract(c, subscriptionService.getSubscriptionByID(c.getSubscriptionId()).getDuration())).collect(Collectors.toList());
             Set<Contract> contractSet = new HashSet<>(contractList);
-            return ContractUtil.SetToString(contractSet);
+            return ContractUtil.SetToString(contractSet, clientService, subscriptionService);
         });
     }
 }

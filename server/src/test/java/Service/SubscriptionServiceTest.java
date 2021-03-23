@@ -28,7 +28,7 @@ public class SubscriptionServiceTest {
         c1.setId(1L);
         c2.setId(2L);
         subscriptionValidator = new SubscriptionValidator();
-        subscriptionRepository = new SubscriptionFileRepository(subscriptionValidator, "resources/data/ServiceFile/SubscriptionsServiceTest");
+        subscriptionRepository = new SubscriptionFileRepository(subscriptionValidator, "/data/Tests/ServiceFile/SubscriptionsServiceTest");
         subscriptionService = new SubscriptionService(subscriptionRepository);
     }
 

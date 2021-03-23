@@ -14,6 +14,6 @@ public class BaseEntity<ID> {
     @Override
     public String toString()
     {
-        return "Domain.BaseEntity{" + "id=" + id + '}';
+        return "Id=" + id;
     }
 }

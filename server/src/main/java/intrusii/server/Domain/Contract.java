@@ -63,9 +63,10 @@ public class Contract extends BaseEntity<Long> {
     @Override
     public String toString() {
         return "Contract{" +
-                "Client ID=" + clientId +
+                super.toString() +
+                ", Client ID=" + clientId +
                 ", Subscription ID=" + subscriptionId +
                 ", Date=" + date +
-                '}' + super.toString();
+                '}';
     }
 }

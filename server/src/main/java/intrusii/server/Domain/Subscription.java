@@ -56,9 +56,10 @@ public class Subscription extends BaseEntity<Long> {
     @Override
     public String toString() {
         return "Subscription{" +
-                "Type=" + type +
+                super.toString() +
+                ", Type=" + type +
                 ", Price=" + price +
                 ", Duration=" + duration +
-                '}' + super.toString();
+                '}';
     }
 }

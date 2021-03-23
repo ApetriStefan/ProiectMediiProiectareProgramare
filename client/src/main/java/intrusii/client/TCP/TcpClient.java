@@ -20,6 +20,7 @@ public class TcpClient {
              var is = socket.getInputStream();
              var os = socket.getOutputStream()) {
 
+            System.out.println("******************************");
             System.out.println("Sending request: " + request);
             request.writeTo(os);
             System.out.println("Request sent");
@@ -27,6 +28,7 @@ public class TcpClient {
             Message response = new Message();
             response.readFrom(is);
             System.out.println("Received response: " + response);
+            System.out.println("******************************");
 
             return response;
 

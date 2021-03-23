@@ -5,6 +5,7 @@ import intrusii.server.Domain.Client;
 import intrusii.server.Domain.Subscription;
 import intrusii.server.Domain.SubscriptionType;
 
+import java.time.format.DateTimeParseException;
 import java.util.Set;
 
 public class SubscriptionUtil {
@@ -15,9 +16,12 @@ public class SubscriptionUtil {
             String price = arguments[1];
             String duration = arguments[2];
 
-            return new Subscription(SubscriptionType.valueOf(type), Integer.parseInt(price), Integer.parseInt(duration));
+            return new Subscription(SubscriptionType.valueOf(type), Float.parseFloat(price), Integer.parseInt(duration));
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new SocketException("Something went wrong! Check the input");
+            throw new SocketException("Something went wrong! Not enough attributes");
+        }
+        catch (NumberFormatException e){
+            throw new SocketException("Incorrect type for the attributes");
         }
     }
 
@@ -34,8 +38,11 @@ public class SubscriptionUtil {
             Subscription subscriptionObj = new Subscription(SubscriptionType.valueOf(type), Integer.parseInt(price), Integer.parseInt(duration));
             subscriptionObj.setId(idLong);
             return subscriptionObj;
-        } catch (ArrayIndexOutOfBoundsException |  NumberFormatException e) {
-            throw new SocketException("Something went wrong! Check the input");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new SocketException("Something went wrong! Not enough attributes");
+        }
+        catch (NumberFormatException e){
+            throw new SocketException("Incorrect type for the attributes");
         }
     }
 

@@ -28,7 +28,7 @@ public class ContractServiceTest {
         c1.setId(1L);
         c2.setId(2L);
         contractValidator = new ContractValidator();
-        contractRepository = new ContractFileRepository(contractValidator, "resources/data/ServiceFile/ContractsServiceTest");
+        contractRepository = new ContractFileRepository(contractValidator, "/data/Tests/ServiceFile/ContractsServiceTest");
         contractService = new ContractService(contractRepository);
     }
 

@@ -25,7 +25,7 @@ public class ContractXMLRepositoryTest {
         c1.setId(1L);
         c2.setId(2L);
         ContractValidator validator = new ContractValidator();
-        repo = new ContractXMLRepository(validator, "resources/data/XML/ContractsXMLTest");
+        repo = new ContractXMLRepository(validator, "/data/Tests/XML/ContractsXMLTest");
     }
 
     @After
