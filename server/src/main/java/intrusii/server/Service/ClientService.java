@@ -1,6 +1,7 @@
 package intrusii.server.Service;
 
 import intrusii.server.Domain.Client;
+import intrusii.server.Domain.Contract;
 import intrusii.server.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.Repository;
 
@@ -13,9 +14,11 @@ import java.util.stream.StreamSupport;
 
 public class ClientService {
     private Repository<Long, Client> repository;
+    private Repository<Long, Contract> contractRepository;
 
-    public ClientService(Repository<Long, Client> repository) {
+    public ClientService(Repository<Long, Client> repository,Repository<Long, Contract> contractRepository ) {
         this.repository = repository;
+        this.contractRepository = contractRepository;
     }
 
     public Set<Client> getAllClients() {
@@ -27,7 +30,9 @@ public class ClientService {
         repository.save(client);
     }
 
-    public void deleteClient(Long id) throws ValidatorException {
+    public void deleteClient(Long id) throws ValidatorException
+    {
+        deleteContractByClientID(id);
         repository.delete(id).orElseThrow(() -> new IllegalArgumentException("There is no client with this ID"));
     }
 
@@ -66,4 +71,9 @@ public class ClientService {
         clientsIterable = repository.findAll();
         return StreamSupport.stream(clientsIterable.spliterator(), false).filter(function).collect(Collectors.toList());
     }
+    private void deleteContractByClientID(Long id)
+    {
+        StreamSupport.stream(contractRepository.findAll().spliterator(), false).filter(contract -> contract.getClientId().equals(id)).forEach(contract ->contractRepository.delete(contract.getId()));
+    }
+
 }

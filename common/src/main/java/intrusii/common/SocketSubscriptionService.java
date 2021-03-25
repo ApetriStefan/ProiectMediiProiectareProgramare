@@ -7,8 +7,6 @@ public interface SocketSubscriptionService
 
 
     //`````````````````````````````````````````````````Subscription`````````````````````````````````````````````````//
-    int PORT = 6666;
-    String HOST = "localhost";
     Future<String> addSubscription(String subscription);
     Future<String> deleteSubscription(String id);
     Future<String> updateSubscription(String subscription);

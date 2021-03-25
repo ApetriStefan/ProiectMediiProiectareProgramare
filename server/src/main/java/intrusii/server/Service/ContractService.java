@@ -1,7 +1,9 @@
 package intrusii.server.Service;
 
 
+import intrusii.server.Domain.Client;
 import intrusii.server.Domain.Contract;
+import intrusii.server.Domain.Subscription;
 import intrusii.server.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.Repository;
 
@@ -16,9 +18,13 @@ import java.util.stream.StreamSupport;
 
 public class ContractService {
     private Repository<Long, Contract> repository;
+    private Repository<Long, Client> clientRepository;
+    private Repository<Long, Subscription> subscriptionRepository;
 
-    public ContractService(Repository<Long, Contract> repository) {
+    public ContractService(Repository<Long, Contract> repository,Repository<Long, Client> clientRepository,Repository<Long, Subscription> subscriptionRepository) {
         this.repository = repository;
+        this.clientRepository = clientRepository;
+        this.subscriptionRepository = subscriptionRepository;
     }
 
     public Set<Contract> getAllContracts() {
@@ -26,8 +32,10 @@ public class ContractService {
         return StreamSupport.stream(contracts.spliterator(), false).collect(Collectors.toSet());
     }
 
-    public void addContract(Contract contract) throws ValidatorException {
-        repository.save(contract);
+    public void addContract(Contract contract) throws ValidatorException
+    {
+        if (clientRepository.findOne(contract.getClientId()).isPresent() && subscriptionRepository.findOne(contract.getSubscriptionId()).isPresent())
+            repository.save(contract);
     }
 
     public void deleteContract(Long id) throws ValidatorException {
@@ -41,10 +49,15 @@ public class ContractService {
      *            must not be null.
      */
     public void updateContract(Contract contract) throws ValidatorException {
-        Optional<Contract> oldContract = repository.findOne(contract.getId());
-        oldContract.orElseThrow(() -> new IllegalArgumentException("There is no contract with this ID"));
-        oldContract.get().setClientId(contract.getClientId());
-        repository.update(oldContract.get());
+        if (clientRepository.findOne(contract.getClientId()).isPresent()) {
+            Optional<Contract> oldContract = repository.findOne(contract.getId());
+            oldContract.orElseThrow(() -> new IllegalArgumentException("There is no contract with this ID"));
+            oldContract.get().setClientId(contract.getClientId());
+            repository.update(oldContract.get());
+        }
+        else
+            throw new ValidatorException("This client does not exist!");
+
     }
 
     /**

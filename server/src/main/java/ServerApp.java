@@ -1,4 +1,7 @@
+import intrusii.common.SocketClientService;
+import intrusii.common.SocketContractService;
 import intrusii.common.SocketController;
+import intrusii.common.SocketSubscriptionService;
 import intrusii.server.Controller.SocketServerController;
 import intrusii.server.Domain.Client;
 import intrusii.server.Domain.Contract;
@@ -18,9 +21,7 @@ import intrusii.server.Repository.Repository;
 import intrusii.server.Repository.XMLRepository.ClientXMLRepository;
 import intrusii.server.Repository.XMLRepository.ContractXMLRepository;
 import intrusii.server.Repository.XMLRepository.SubscriptionXMLRepository;
-import intrusii.server.Service.ClientService;
-import intrusii.server.Service.ContractService;
-import intrusii.server.Service.SubscriptionService;
+import intrusii.server.Service.*;
 import intrusii.server.TCP.TcpServer;
 import intrusii.server.Utility.Handlers;
 
@@ -75,18 +76,34 @@ public class ServerApp {
         }
 
         //Service
-        ClientService clientService = new ClientService(clientRepository);
-        SubscriptionService subscriptionService = new SubscriptionService(subscriptionRepository);
-        ContractService contractService = new ContractService(contractRepository);
+        ClientService clientService = new ClientService(clientRepository,contractRepository);
+        SubscriptionService subscriptionService = new SubscriptionService(subscriptionRepository,contractRepository);
+        ContractService contractService = new ContractService(contractRepository,clientRepository,subscriptionRepository);
+
+        SocketClientService socketClientService = new SocketClientServiceImpl(executorService,clientService,contractService);
+        SocketSubscriptionService socketSubscriptionService = new SocketSubscriptionServiceImpl(executorService,subscriptionService,contractService);
+        SocketContractService socketContractService = new SocketContractServiceImpl(executorService,clientService,subscriptionService,contractService);
+
+        //Port and hostname (from properties)
+        Properties connectionProperties = null;
+        try {
+            connectionProperties = new Properties();
+            connectionProperties.load(new FileInputStream("./common/ConnectionConfig.properties"));
+
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
 
         //TCP Connection
-        TcpServer tcpServer = new TcpServer(executorService, SocketController.PORT);
+        TcpServer tcpServer = new TcpServer(executorService, Integer.parseInt(connectionProperties.getProperty("PORT")));
 
         //ServerConnection
-        SocketController socketController = new SocketServerController(executorService, clientService, contractService, subscriptionService);
+//        SocketController socketController = new SocketServerController(executorService, clientService, contractService, subscriptionService);
 
         //Add handlers
-        Handlers.addHandlerClient(tcpServer, socketController);
+        Handlers.addHandlerClient(tcpServer, socketClientService);
+        Handlers.addHandlerSubscription(tcpServer, socketSubscriptionService);
+        Handlers.addHandlerContract(tcpServer, socketContractService);
 
         //Start server
         tcpServer.startServer();

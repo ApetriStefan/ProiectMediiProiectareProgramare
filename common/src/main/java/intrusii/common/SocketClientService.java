@@ -6,8 +6,6 @@ public interface SocketClientService
 {
 
     //`````````````````````````````````````````````````Client`````````````````````````````````````````````````//
-    int PORT = 6666;
-    String HOST = "localhost";
 
     String ADD_CLIENT = "addClient";
     String DELETE_CLIENT = "deleteClient";

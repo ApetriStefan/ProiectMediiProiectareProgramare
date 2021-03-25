@@ -1,99 +1,102 @@
 package intrusii.server.Utility;
 
-import intrusii.common.Message;
-import intrusii.common.SocketController;
+import intrusii.common.*;
 import intrusii.server.TCP.TcpServer;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class Handlers {
-    public static void addHandlerClient(TcpServer tcpServer, SocketController socketController) {
+    public static void addHandlerClient(TcpServer tcpServer, SocketClientService socketClientService) {
         //addClient
-        tcpServer.addHandler(SocketController.ADD_CLIENT, request -> {
-            Future<String> res = socketController.addClient(request.getBody());
+        tcpServer.addHandler(SocketClientService.ADD_CLIENT, request -> {
+            Future<String> res = socketClientService.addClient(request.getBody());
             return addHandlerTry(res);
         });
         //deleteClient
-        tcpServer.addHandler(SocketController.DELETE_CLIENT, request -> {
-            Future<String> res = socketController.deleteClient(request.getBody());
+        tcpServer.addHandler(SocketClientService.DELETE_CLIENT, request -> {
+            Future<String> res = socketClientService.deleteClient(request.getBody());
             return addHandlerTry(res);
         });
         //updateClient
-        tcpServer.addHandler(SocketController.UPDATE_CLIENT, request -> {
-            Future<String> res = socketController.updateClient(request.getBody());
+        tcpServer.addHandler(SocketClientService.UPDATE_CLIENT, request -> {
+            Future<String> res = socketClientService.updateClient(request.getBody());
             return addHandlerTry(res);
         });
         //getAllClients
-        tcpServer.addHandler(SocketController.GET_ALL_CLIENTS, request -> {
-            Future<String> res = socketController.getAllClients();
+        tcpServer.addHandler(SocketClientService.GET_ALL_CLIENTS, request -> {
+            Future<String> res = socketClientService.getAllClients();
             return addHandlerTry(res);
         });
         //filterClientsByName
-        tcpServer.addHandler(SocketController.FILTER_CLIENTS_BY_NAME, request -> {
-            Future<String> res = socketController.filterClientsByName(request.getBody());
+        tcpServer.addHandler(SocketClientService.FILTER_CLIENTS_BY_NAME, request -> {
+            Future<String> res = socketClientService.filterClientsByName(request.getBody());
             return addHandlerTry(res);
         });
         //filterClientsByCnp
-        tcpServer.addHandler(SocketController.FILTER_CLIENTS_BY_CNP, request -> {
-            Future<String> res = socketController.filterClientsByCnp(request.getBody());
+        tcpServer.addHandler(SocketClientService.FILTER_CLIENTS_BY_CNP, request -> {
+            Future<String> res = socketClientService.filterClientsByCnp(request.getBody());
             return addHandlerTry(res);
         });
+    }
+    public static void addHandlerSubscription(TcpServer tcpServer, SocketSubscriptionService socketSubscriptionService) {
         //addSubscription
-        tcpServer.addHandler(SocketController.ADD_SUBSCRIPTION, request -> {
-            Future<String> res = socketController.addSubscription(request.getBody());
+        tcpServer.addHandler(SocketSubscriptionService.ADD_SUBSCRIPTION, request -> {
+            Future<String> res = socketSubscriptionService.addSubscription(request.getBody());
             return addHandlerTry(res);
         });
         //deleteSubscription
-        tcpServer.addHandler(SocketController.DELETE_SUBSCRIPTION, request -> {
-            Future<String> res = socketController.deleteSubscription(request.getBody());
+        tcpServer.addHandler(SocketSubscriptionService.DELETE_SUBSCRIPTION, request -> {
+            Future<String> res = socketSubscriptionService.deleteSubscription(request.getBody());
             return addHandlerTry(res);
         });
         //updateSubscription
-        tcpServer.addHandler(SocketController.UPDATE_SUBSCRIPTION, request -> {
-            Future<String> res = socketController.updateSubscription(request.getBody());
+        tcpServer.addHandler(SocketSubscriptionService.UPDATE_SUBSCRIPTION, request -> {
+            Future<String> res = socketSubscriptionService.updateSubscription(request.getBody());
             return addHandlerTry(res);
         });
         //getAllSubscriptions
-        tcpServer.addHandler(SocketController.GET_ALL_SUBSCRIPTIONS, request -> {
-            Future<String> res = socketController.getAllSubscriptions();
+        tcpServer.addHandler(SocketSubscriptionService.GET_ALL_SUBSCRIPTIONS, request -> {
+            Future<String> res = socketSubscriptionService.getAllSubscriptions();
             return addHandlerTry(res);
         });
         //filterSubscriptionsByDuration
-        tcpServer.addHandler(SocketController.FILTER_SUBSCRIPTION_BY_DURATION, request -> {
-            Future<String> res = socketController.filterSubscriptionByDuration(request.getBody());
+        tcpServer.addHandler(SocketSubscriptionService.FILTER_SUBSCRIPTION_BY_DURATION, request -> {
+            Future<String> res = socketSubscriptionService.filterSubscriptionByDuration(request.getBody());
             return addHandlerTry(res);
         });
         //filterSubscriptionsByType
-        tcpServer.addHandler(SocketController.FILTER_SUBSCRIPTION_BY_TYPE, request -> {
-            Future<String> res = socketController.filterSubscriptionByType(request.getBody());
+        tcpServer.addHandler(SocketSubscriptionService.FILTER_SUBSCRIPTION_BY_TYPE, request -> {
+            Future<String> res = socketSubscriptionService.filterSubscriptionByType(request.getBody());
             return addHandlerTry(res);
         });
 
+    }
 
+    public static void addHandlerContract(TcpServer tcpServer, SocketContractService socketContractService) {
         //addContract
-        tcpServer.addHandler(SocketController.ADD_CONTRACT, request -> {
-            Future<String> res = socketController.addContract(request.getBody());
+        tcpServer.addHandler(SocketContractService.ADD_CONTRACT, request -> {
+            Future<String> res = socketContractService.addContract(request.getBody());
             return addHandlerTry(res);
         });
         //deleteContract
-        tcpServer.addHandler(SocketController.DELETE_CONTRACT, request -> {
-            Future<String> res = socketController.deleteContract(request.getBody());
+        tcpServer.addHandler(SocketContractService.DELETE_CONTRACT, request -> {
+            Future<String> res = socketContractService.deleteContract(request.getBody());
             return addHandlerTry(res);
         });
         //updateContract
-        tcpServer.addHandler(SocketController.UPDATE_CONTRACT, request -> {
-            Future<String> res = socketController.updateContract(request.getBody());
+        tcpServer.addHandler(SocketContractService.UPDATE_CONTRACT, request -> {
+            Future<String> res = socketContractService.updateContract(request.getBody());
             return addHandlerTry(res);
         });
         //getAllContracts
-        tcpServer.addHandler(SocketController.GET_ALL_CONTRACTS, request -> {
-            Future<String> res = socketController.getAllContracts();
+        tcpServer.addHandler(SocketContractService.GET_ALL_CONTRACTS, request -> {
+            Future<String> res = socketContractService.getAllContracts();
             return addHandlerTry(res);
         });
         //filterExpiredContracts
-        tcpServer.addHandler(SocketController.FILTER_EXPIRED_CONTRACTS, request -> {
-            Future<String> res = socketController.filterExpiredContracts();
+        tcpServer.addHandler(SocketContractService.FILTER_EXPIRED_CONTRACTS, request -> {
+            Future<String> res = socketContractService.filterExpiredContracts();
             return addHandlerTry(res);
         });
     }

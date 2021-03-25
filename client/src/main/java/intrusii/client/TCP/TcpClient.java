@@ -10,13 +10,18 @@ import java.util.concurrent.ExecutorService;
 
 public class TcpClient {
     private ExecutorService executorService;
+    private int PORT;
+    private String HOST;
 
-    public TcpClient(ExecutorService executorService) {
+    public TcpClient(ExecutorService executorService,String HOST,int PORT) {
         this.executorService = executorService;
+        this.PORT = PORT;
+        this.HOST = HOST;
     }
 
+
     public Message sendAndReceive(Message request) {
-        try (var socket = new Socket(SocketController.HOST, SocketController.PORT);
+        try (var socket = new Socket(HOST,PORT);
              var is = socket.getInputStream();
              var os = socket.getOutputStream()) {
 

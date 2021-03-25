@@ -3,8 +3,6 @@ package intrusii.common;
 import java.util.concurrent.Future;
 
 public interface SocketController {
-    int PORT = 6666;
-    String HOST = "localhost";
 
     String ADD_CLIENT = "addClient";
     String DELETE_CLIENT = "deleteClient";

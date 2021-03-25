@@ -1,6 +1,9 @@
 package intrusii.client.UI;
 
+import intrusii.common.SocketClientService;
+import intrusii.common.SocketContractService;
 import intrusii.common.SocketController;
+import intrusii.common.SocketSubscriptionService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,10 +13,18 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class Console {
-    private final SocketController socketClientController;
+//    private final SocketController socketClientController;
+    private final SocketClientService socketClientService;
+    private final SocketSubscriptionService socketSubscriptionService;
+    private final SocketContractService socketContractService;
 
-    public Console(SocketController socketCtrl) {
-        this.socketClientController = socketCtrl;
+    public Console(SocketClientService socketClientService,SocketSubscriptionService socketSubscriptionService,SocketContractService socketContractService)
+    {
+
+        this.socketClientService = socketClientService;
+        this.socketSubscriptionService = socketSubscriptionService;
+        this.socketContractService = socketContractService;
+
     }
 
     public void runConsole() {
@@ -213,7 +224,7 @@ public class Console {
         if (client == null)
             System.err.println("Please insert valid data");
         else {
-            Future<String> resultFuture = socketClientController.addClient(client);
+            Future<String> resultFuture = socketClientService.addClient(client);
             try {
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -233,7 +244,7 @@ public class Console {
             System.err.println("Invalid ID");
         }
         else{
-            Future<String> resultFuture = socketClientController.deleteClient(id);
+            Future<String> resultFuture = socketClientService.deleteClient(id);
             try{
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -252,7 +263,7 @@ public class Console {
             System.err.println("Invalid input");
         }
         else{
-            Future<String> resultFuture = socketClientController.updateClient(client);
+            Future<String> resultFuture = socketClientService.updateClient(client);
             try {
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -267,7 +278,7 @@ public class Console {
      *
      */
     private void printAllClients() {
-        Future<String> resultFuture = socketClientController.getAllClients();
+        Future<String> resultFuture = socketClientService.getAllClients();
         try{
             String result = resultFuture.get();
             System.out.println("The clients are: ");
@@ -282,7 +293,7 @@ public class Console {
         Scanner scannerName = new Scanner(System.in);
         String name = scannerName.nextLine();
 
-        Future<String> resultFuture = socketClientController.filterClientsByName(name);
+        Future<String> resultFuture = socketClientService.filterClientsByName(name);
         try{
             String result = resultFuture.get();
             System.out.println("The clients containing '" + name + "' are: ");
@@ -297,7 +308,7 @@ public class Console {
         Scanner scannerName = new Scanner(System.in);
         String cnp = scannerName.nextLine();
 
-        Future<String> resultFuture = socketClientController.filterClientsByCnp(cnp);
+        Future<String> resultFuture = socketClientService.filterClientsByCnp(cnp);
         try{
             String result = resultFuture.get();
             System.out.println("The client with this cnp is: ");
@@ -374,7 +385,7 @@ public class Console {
             System.err.println("Please insert valid data");
         }
         else {
-            Future<String> resultFuture = socketClientController.addSubscription(subscription);
+            Future<String> resultFuture = socketSubscriptionService.addSubscription(subscription);
             try {
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -394,7 +405,7 @@ public class Console {
             System.err.println("Invalid ID");
         }
         else{
-            Future<String> resultFuture = socketClientController.deleteSubscription(id);
+            Future<String> resultFuture = socketSubscriptionService.deleteSubscription(id);
             try{
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -413,7 +424,7 @@ public class Console {
             System.err.println("Invalid input");
         }
         else{
-            Future<String> resultFuture = socketClientController.updateSubscription(subscription);
+            Future<String> resultFuture = socketSubscriptionService.updateSubscription(subscription);
             try {
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -428,7 +439,7 @@ public class Console {
      *
      */
     private void printAllSubscriptions() {
-        Future<String> resultFuture = socketClientController.getAllSubscriptions();
+        Future<String> resultFuture = socketSubscriptionService.getAllSubscriptions();
         try{
             String result = resultFuture.get();
             System.out.println("The subscriptions are: ");
@@ -443,7 +454,7 @@ public class Console {
         Scanner scannerDuration = new Scanner(System.in);
         String duration = scannerDuration.nextLine();
 
-        Future<String> resultFuture = socketClientController.filterSubscriptionByDuration(duration);
+        Future<String> resultFuture = socketSubscriptionService.filterSubscriptionByDuration(duration);
         try{
             String result = resultFuture.get();
             System.out.println("The subscription with duration '" + duration + "' are: ");
@@ -458,7 +469,7 @@ public class Console {
         Scanner scannerType = new Scanner(System.in);
         String type = scannerType.nextLine();
 
-        Future<String> resultFuture = socketClientController.filterSubscriptionByType(type);
+        Future<String> resultFuture = socketSubscriptionService.filterSubscriptionByType(type);
         try{
             String result = resultFuture.get();
             System.out.println("The subscription of type '" + type + "' are: ");
@@ -534,7 +545,7 @@ public class Console {
             System.err.println("Please insert valid data");
         }
         else {
-            Future<String> resultFuture = socketClientController.addContract(contract);
+            Future<String> resultFuture = socketContractService.addContract(contract);
             try {
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -555,7 +566,7 @@ public class Console {
             System.err.println("Invalid ID");
         }
         else{
-            Future<String> resultFuture = socketClientController.deleteContract(id);
+            Future<String> resultFuture = socketContractService.deleteContract(id);
             try{
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -574,7 +585,7 @@ public class Console {
             System.err.println("Invalid input");
         }
         else{
-            Future<String> resultFuture = socketClientController.updateContract(contract);
+            Future<String> resultFuture = socketContractService.updateContract(contract);
             try {
                 String result = resultFuture.get();
                 System.out.println(result);
@@ -590,7 +601,7 @@ public class Console {
      *
      */
     private void printAllContracts() {
-        Future<String> resultFuture = socketClientController.getAllContracts();
+        Future<String> resultFuture = socketContractService.getAllContracts();
         try{
             String result = resultFuture.get();
             System.out.println("The contracts are: ");
@@ -603,7 +614,7 @@ public class Console {
     private void filterExpiredContracts()
     {
         System.out.println("Active contracts:");
-        Future<String> resultFuture = socketClientController.filterExpiredContracts();
+        Future<String> resultFuture = socketContractService.filterExpiredContracts();
         try{
             String result = resultFuture.get();
             System.out.println("The contracts are: ");

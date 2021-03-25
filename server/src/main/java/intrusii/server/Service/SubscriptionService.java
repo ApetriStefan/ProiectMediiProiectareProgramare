@@ -1,5 +1,6 @@
 package intrusii.server.Service;
 
+import intrusii.server.Domain.Contract;
 import intrusii.server.Domain.Subscription;
 import intrusii.server.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.Repository;
@@ -13,9 +14,11 @@ import java.util.stream.StreamSupport;
 
 public class SubscriptionService {
     private Repository<Long, Subscription> repository;
+    private Repository<Long, Contract> contractRepository;
 
-    public SubscriptionService(Repository<Long, Subscription> repository) {
+    public SubscriptionService(Repository<Long, Subscription> repository,Repository<Long, Contract> contractRepository) {
         this.repository = repository;
+        this.contractRepository = contractRepository;
     }
 
     public Set<Subscription> getAllSubscriptions() {
@@ -28,6 +31,7 @@ public class SubscriptionService {
     }
 
     public void deleteSubscription(Long id) throws ValidatorException {
+        deleteContractBySubscriptionID(id);
         repository.delete(id).orElseThrow(() -> new IllegalArgumentException("There is no subscription with this ID"));
     }
 
@@ -51,5 +55,9 @@ public class SubscriptionService {
         Iterable<Subscription> subscriptionIterable;
         subscriptionIterable = repository.findAll();
         return StreamSupport.stream(subscriptionIterable.spliterator(), false).filter(function).collect(Collectors.toList());
+    }
+    private void deleteContractBySubscriptionID(Long id)
+    {
+        StreamSupport.stream(contractRepository.findAll().spliterator(), false).filter(contract -> contract.getSubscriptionId().equals(id)).forEach(contract ->contractRepository.delete(contract.getId()));
     }
 }

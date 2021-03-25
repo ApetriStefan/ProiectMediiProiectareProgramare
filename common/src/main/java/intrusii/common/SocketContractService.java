@@ -5,8 +5,6 @@ import java.util.concurrent.Future;
 public interface SocketContractService {
 
     //`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
-    int PORT = 6666;
-    String HOST = "localhost";
 
     String ADD_CONTRACT = "addContract";
     String DELETE_CONTRACT = "deleteContract";
