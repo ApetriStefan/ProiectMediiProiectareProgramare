@@ -14,13 +14,12 @@ import java.util.concurrent.Future;
 public class SocketSubscriptionServiceImpl implements SocketSubscriptionService {
     private final ExecutorService executorService;
     private final SubscriptionService subscriptionService;
-    private final ContractService contractService;
 
-    public SocketSubscriptionServiceImpl(ExecutorService executorService,SubscriptionService subscriptionService,ContractService contractService) {
+    public SocketSubscriptionServiceImpl(ExecutorService executorService, SubscriptionService subscriptionService) {
         this.executorService = executorService;
         this.subscriptionService = subscriptionService;
-        this.contractService = contractService;
     }
+
     @Override
     public Future<String> addSubscription(String subscription) {
 
@@ -41,7 +40,6 @@ public class SocketSubscriptionServiceImpl implements SocketSubscriptionService 
         return executorService.submit( () -> {
             try{
                 Long idLong = Long.parseLong(id);
-                contractService.deleteContractsBySubscriptionID(idLong);
                 subscriptionService.deleteSubscription(idLong);
                 return "Subscription successfully deleted";
             }catch (SocketException |ValidatorException e){
@@ -72,7 +70,7 @@ public class SocketSubscriptionServiceImpl implements SocketSubscriptionService 
 
         return executorService.submit( () -> {
             Set<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
-            return SubscriptionUtil.SetToString(subscriptions);
+            return "The subscriptions are:;" + SubscriptionUtil.SetToString(subscriptions);
         });
     }
 
@@ -82,7 +80,7 @@ public class SocketSubscriptionServiceImpl implements SocketSubscriptionService 
         return executorService.submit( () -> {
             List<Subscription> subscriptionList = subscriptionService.filterByDuration(Integer.parseInt(duration));
             Set<Subscription> subscriptionSet = new HashSet<>(subscriptionList);
-            return SubscriptionUtil.SetToString(subscriptionSet);
+            return "The subscription with duration '" + duration + "' are:;" + SubscriptionUtil.SetToString(subscriptionSet);
         });
     }
 
@@ -92,8 +90,7 @@ public class SocketSubscriptionServiceImpl implements SocketSubscriptionService 
         return executorService.submit( () -> {
             List<Subscription> subscriptionList = subscriptionService.filterByType(type);
             Set<Subscription> subscriptionSet = new HashSet<>(subscriptionList);
-            return SubscriptionUtil.SetToString(subscriptionSet);
+            return "The subscription of type '" + type + "' are:;" + SubscriptionUtil.SetToString(subscriptionSet);
         });
     }
-
 }

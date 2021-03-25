@@ -9,8 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 public class SocketContractServiceImpl implements SocketContractService {
-    private ExecutorService executorService;
-    private TcpClient tcpClient;
+    private final ExecutorService executorService;
+    private final TcpClient tcpClient;
 
     public SocketContractServiceImpl(ExecutorService executorService, TcpClient tcpClient){
         this.executorService = executorService;
@@ -38,11 +38,9 @@ public class SocketContractServiceImpl implements SocketContractService {
     }
 
     @Override
-    public Future<String> filterExpiredContracts() {
+    public Future<String> filterActiveContracts() {
         return genericFunction(SocketContractService.FILTER_EXPIRED_CONTRACTS, null);
     }
-
-
 
     public Future<String> genericFunction(String command, String parameter){
         return executorService.submit( () -> {

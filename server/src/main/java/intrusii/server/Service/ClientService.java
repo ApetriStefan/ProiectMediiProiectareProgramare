@@ -13,8 +13,8 @@ import java.util.stream.StreamSupport;
 
 
 public class ClientService {
-    private Repository<Long, Client> repository;
-    private Repository<Long, Contract> contractRepository;
+    private final Repository<Long, Client> repository;
+    private final Repository<Long, Contract> contractRepository;
 
     public ClientService(Repository<Long, Client> repository,Repository<Long, Contract> contractRepository ) {
         this.repository = repository;
@@ -30,8 +30,7 @@ public class ClientService {
         repository.save(client);
     }
 
-    public void deleteClient(Long id) throws ValidatorException
-    {
+    public void deleteClient(Long id) throws ValidatorException {
         deleteContractByClientID(id);
         repository.delete(id).orElseThrow(() -> new IllegalArgumentException("There is no client with this ID"));
     }
@@ -42,6 +41,10 @@ public class ClientService {
 
     public Client getClientByID(Long id) {
         return repository.findOne(id).orElseThrow(() -> new IllegalArgumentException("There is no client with this id"));
+    }
+
+    private void deleteContractByClientID(Long id) {
+        StreamSupport.stream(contractRepository.findAll().spliterator(), false).filter(contract -> contract.getClientId().equals(id)).forEach(contract -> contractRepository.delete(contract.getId()));
     }
 
     /**
@@ -71,9 +74,4 @@ public class ClientService {
         clientsIterable = repository.findAll();
         return StreamSupport.stream(clientsIterable.spliterator(), false).filter(function).collect(Collectors.toList());
     }
-    private void deleteContractByClientID(Long id)
-    {
-        StreamSupport.stream(contractRepository.findAll().spliterator(), false).filter(contract -> contract.getClientId().equals(id)).forEach(contract ->contractRepository.delete(contract.getId()));
-    }
-
 }

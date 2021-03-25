@@ -13,8 +13,8 @@ import java.util.stream.StreamSupport;
 
 
 public class SubscriptionService {
-    private Repository<Long, Subscription> repository;
-    private Repository<Long, Contract> contractRepository;
+    private final Repository<Long, Subscription> repository;
+    private final Repository<Long, Contract> contractRepository;
 
     public SubscriptionService(Repository<Long, Subscription> repository,Repository<Long, Contract> contractRepository) {
         this.repository = repository;
@@ -56,8 +56,8 @@ public class SubscriptionService {
         subscriptionIterable = repository.findAll();
         return StreamSupport.stream(subscriptionIterable.spliterator(), false).filter(function).collect(Collectors.toList());
     }
-    private void deleteContractBySubscriptionID(Long id)
-    {
-        StreamSupport.stream(contractRepository.findAll().spliterator(), false).filter(contract -> contract.getSubscriptionId().equals(id)).forEach(contract ->contractRepository.delete(contract.getId()));
+
+    private void deleteContractBySubscriptionID(Long id) {
+        StreamSupport.stream(contractRepository.findAll().spliterator(), false).filter(contract -> contract.getSubscriptionId().equals(id)).forEach(contract -> contractRepository.delete(contract.getId()));
     }
 }

@@ -4,8 +4,6 @@ import java.util.concurrent.Future;
 
 public interface SocketContractService {
 
-    //`````````````````````````````````````````````````Contract`````````````````````````````````````````````````//
-
     String ADD_CONTRACT = "addContract";
     String DELETE_CONTRACT = "deleteContract";
     String UPDATE_CONTRACT = "updateContract";
@@ -16,6 +14,6 @@ public interface SocketContractService {
     Future<String> deleteContract(String id);
     Future<String> updateContract(String contract);
     Future<String> getAllContracts();
-    Future<String> filterExpiredContracts();
+    Future<String> filterActiveContracts();
 
 }

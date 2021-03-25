@@ -9,8 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 public class SocketSubscriptionServiceImpl implements SocketSubscriptionService {
-    private ExecutorService executorService;
-    private TcpClient tcpClient;
+    private final ExecutorService executorService;
+    private final TcpClient tcpClient;
 
     public SocketSubscriptionServiceImpl (ExecutorService executorService, TcpClient tcpClient){
         this.executorService = executorService;

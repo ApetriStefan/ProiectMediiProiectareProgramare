@@ -55,6 +55,6 @@ public class ContractUtil {
     }
 
     public static String SetToString(Set<Contract> contracts, ClientService clientService, SubscriptionService subscriptionService) {
-        return contracts.stream().map(contract -> "*" + clientService.getClientByID(contract.getClientId()) + ";" + subscriptionService.getSubscriptionByID(contract.getSubscriptionId()) + ";" + "Date{" +  contract.getDate() + "};").reduce("", (contractString, contract) ->  contractString + ";" + contract);
+        return contracts.stream().map(contract -> "*ID{" + contract.getId() + "};" + clientService.getClientByID(contract.getClientId()) + ";" + subscriptionService.getSubscriptionByID(contract.getSubscriptionId()) + ";" + "Date{" +  contract.getDate() + "};").reduce("", (contractString, contract) ->  contractString + ";" + contract);
     }
 }
