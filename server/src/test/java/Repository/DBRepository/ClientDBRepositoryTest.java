@@ -26,10 +26,10 @@ public class ClientDBRepositoryTest {
     @Before
     public void setUp() throws Exception {
         ClientValidator validator = new ClientValidator();
-        repository = new ClientDBRepository(validator, "jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "incorrect");
+        repository = new ClientDBRepository(validator, "jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "cfsa123");
 
         String sql = "ALTER SEQUENCE client_id_seq RESTART WITH 4";
-        try (var connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "incorrect");
+        try (var connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "cfsa123");
              var ps = connection.prepareStatement(sql)) {
             ps.executeQuery();
         }catch (SQLException ex){

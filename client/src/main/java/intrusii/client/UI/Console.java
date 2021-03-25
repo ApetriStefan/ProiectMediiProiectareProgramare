@@ -197,9 +197,10 @@ public class Console {
         System.out.println("0. Back to main menu");
         System.out.println("1. Add a contract");
         System.out.println("2. Delete a contract");
+
         System.out.println("3. Update a contract");
         System.out.println("4. Show all contracts");
-        System.out.println("5. Show the active contracts\n");
+        System.out.println("5. Show the act");
     }
 
 //`````````````````````````````````````````````````Client`````````````````````````````````````````````````//
