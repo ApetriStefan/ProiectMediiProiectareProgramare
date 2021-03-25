@@ -74,13 +74,13 @@ public class ServerApp {
         }
 
         //Service
-        ClientService clientService = new ClientService(clientRepository,contractRepository);
-        SubscriptionService subscriptionService = new SubscriptionService(subscriptionRepository,contractRepository);
-        ContractService contractService = new ContractService(contractRepository,clientRepository,subscriptionRepository);
+        ClientService clientService = new ClientService(clientRepository, contractRepository);
+        SubscriptionService subscriptionService = new SubscriptionService(subscriptionRepository, contractRepository);
+        ContractService contractService = new ContractService(contractRepository ,clientRepository, subscriptionRepository);
 
-        SocketClientService socketClientService = new SocketClientServiceImpl(executorService,clientService,contractService);
-        SocketSubscriptionService socketSubscriptionService = new SocketSubscriptionServiceImpl(executorService,subscriptionService,contractService);
-        SocketContractService socketContractService = new SocketContractServiceImpl(executorService,clientService,subscriptionService,contractService);
+        SocketClientService socketClientService = new SocketClientServiceImpl(executorService, clientService);
+        SocketSubscriptionService socketSubscriptionService = new SocketSubscriptionServiceImpl(executorService, subscriptionService);
+        SocketContractService socketContractService = new SocketContractServiceImpl(executorService, clientService, subscriptionService, contractService);
 
         //Port and hostname (from properties)
         Properties connectionProperties = null;

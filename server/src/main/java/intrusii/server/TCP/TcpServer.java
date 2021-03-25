@@ -11,9 +11,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.UnaryOperator;
 
 public class TcpServer {
-    private ExecutorService executorService;
+    private final ExecutorService executorService;
     private final int port;
-    private Map<String, UnaryOperator<Message>> methodHandlers;
+    private final Map<String, UnaryOperator<Message>> methodHandlers;
 
     public TcpServer(ExecutorService executorService, int port) {
         this.executorService = executorService;
@@ -34,14 +34,13 @@ public class TcpServer {
                 System.out.println("Client connected :)");
                 executorService.submit(new ClientHandler(clientSocket));
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private class ClientHandler implements Runnable {
-        private Socket socket;
+        private final Socket socket;
 
         public ClientHandler(Socket socket) {
             this.socket = socket;
@@ -55,6 +54,7 @@ public class TcpServer {
                 //read the request (of type Message) from client
                 Message request = new Message();
                 request.readFrom(is);
+                System.out.println("******************************");
                 System.out.println("Received request: " + request);
 
                 // compute response (of type Message)
@@ -64,6 +64,7 @@ public class TcpServer {
                 //send response (of type Message) to client
                 response.writeTo(os);
                 System.out.println("Response sent to client");
+                System.out.println("******************************");
 
             } catch (IOException e) {
                 e.printStackTrace();

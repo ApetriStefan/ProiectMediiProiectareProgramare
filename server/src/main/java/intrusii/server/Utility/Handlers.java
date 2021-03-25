@@ -39,6 +39,7 @@ public class Handlers {
             return addHandlerTry(res);
         });
     }
+
     public static void addHandlerSubscription(TcpServer tcpServer, SocketSubscriptionService socketSubscriptionService) {
         //addSubscription
         tcpServer.addHandler(SocketSubscriptionService.ADD_SUBSCRIPTION, request -> {
@@ -96,7 +97,7 @@ public class Handlers {
         });
         //filterExpiredContracts
         tcpServer.addHandler(SocketContractService.FILTER_EXPIRED_CONTRACTS, request -> {
-            Future<String> res = socketContractService.filterExpiredContracts();
+            Future<String> res = socketContractService.filterActiveContracts();
             return addHandlerTry(res);
         });
     }
@@ -107,22 +108,7 @@ public class Handlers {
             Message response = new Message(Message.OK, result);
             return response;
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
             return new Message(Message.ERROR, e.getMessage());
         }
     }
-
-//    private static void addHandlerGeneric(TcpServer tcpServer, SocketController socketController, String functionName, Future<String> functionResult, Function<Void, Future<String>> function){
-//        tcpServer.addHandler(functionName, request -> {
-//            Future<String> res = socketController.function(request.getBody());
-//            try{
-//                String result = res.get();
-//                Message response = new Message(Message.OK, result);
-//                return response;
-//            }catch (InterruptedException | ExecutionException e){
-//                e.printStackTrace();
-//                return new Message(Message.ERROR, e.getMessage());
-//            }
-//        });
-//    }
 }

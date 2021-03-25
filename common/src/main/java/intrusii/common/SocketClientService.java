@@ -2,10 +2,7 @@ package intrusii.common;
 
 import java.util.concurrent.Future;
 
-public interface SocketClientService
-{
-
-    //`````````````````````````````````````````````````Client`````````````````````````````````````````````````//
+public interface SocketClientService {
 
     String ADD_CLIENT = "addClient";
     String DELETE_CLIENT = "deleteClient";

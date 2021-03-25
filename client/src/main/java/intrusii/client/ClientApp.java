@@ -33,7 +33,7 @@ public class ClientApp {
                 }
 
                 //TCP Connection
-                TcpClient tcpClient = new TcpClient(executorService,connectionProperties.getProperty("HOST"),Integer.parseInt(connectionProperties.getProperty("PORT")));
+                TcpClient tcpClient = new TcpClient(connectionProperties.getProperty("HOST"),Integer.parseInt(connectionProperties.getProperty("PORT")));
 
                 //Client Controller
                 SocketClientService socketClientService = new SocketClientServiceImpl(executorService,tcpClient);

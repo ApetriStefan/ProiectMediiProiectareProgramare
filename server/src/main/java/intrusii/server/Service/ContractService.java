@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class ContractService {
-    private Repository<Long, Contract> repository;
-    private Repository<Long, Client> clientRepository;
-    private Repository<Long, Subscription> subscriptionRepository;
+    private final Repository<Long, Contract> repository;
+    private final Repository<Long, Client> clientRepository;
+    private final Repository<Long, Subscription> subscriptionRepository;
 
     public ContractService(Repository<Long, Contract> repository,Repository<Long, Client> clientRepository,Repository<Long, Subscription> subscriptionRepository) {
         this.repository = repository;
@@ -32,10 +32,11 @@ public class ContractService {
         return StreamSupport.stream(contracts.spliterator(), false).collect(Collectors.toSet());
     }
 
-    public void addContract(Contract contract) throws ValidatorException
-    {
+    public void addContract(Contract contract) throws ValidatorException {
         if (clientRepository.findOne(contract.getClientId()).isPresent() && subscriptionRepository.findOne(contract.getSubscriptionId()).isPresent())
             repository.save(contract);
+        else
+            throw new ValidatorException("The ids are not valid");
     }
 
     public void deleteContract(Long id) throws ValidatorException {
@@ -56,68 +57,16 @@ public class ContractService {
             repository.update(oldContract.get());
         }
         else
-            throw new ValidatorException("This client does not exist!");
-
+            throw new ValidatorException("This client does not exist");
     }
 
-    /**
-     * Deletes entries in the repository by given Client ID (Long ID)
-     *
-     * @param id
-     *            must not be null.
-     */
-    public void deleteContractsByClientID(Long id) {
-        filteredByClientID(id).forEach(contract -> deleteContract(contract.getId()));
-    }
-
-    /**
-     * Deletes entries in the repository by given Subscription ID (Long ID)
-     *
-     * @param id
-     *            must not be null.
-     */
-    public void deleteContractsBySubscriptionID(Long id) {
-        filteredBySubscriptionID(id).forEach(contract -> deleteContract(contract.getId()));
-    }
-
-    public Contract getContractById(Long id) {
-        return repository.findOne(id).orElseThrow(() -> new IllegalArgumentException("There is no contract with this ID"));
-    }
-
-    /**
-     * Filters the repository by given Client ID (Long ID)
-     *
-     * @param id
-     *            must not be null.
-     * @return an {@code List<Contract>} - if any contracts with specific Client ID were found, otherwise returns null.
-     */
-    public List<Contract> filteredByClientID(Long id) {
-        return filterGeneric(x-> x.getClientId().equals(id));
-    }
-
-    /**
-     * Filters the repository by given Subscription ID (Long ID)
-     *
-     * @param id
-     *            must not be null.
-     * @return an {@code List<Contract>} - if any contracts with specific Subscription ID were found, otherwise returns null.
-     */
-    public List<Contract> filteredBySubscriptionID(Long id) {
-        return filterGeneric(x-> x.getSubscriptionId().equals(id));
+    public List<Contract> filterActiveContracts() {
+        return filterGeneric(x -> ChronoUnit.MONTHS.between(x.getDate(), LocalDate.now()) <= subscriptionRepository.findOne(x.getSubscriptionId()).get().getDuration());
     }
 
     public List<Contract> filterGeneric(Predicate<Contract> function){
         Iterable<Contract> contractsIterable;
         contractsIterable = repository.findAll();
         return StreamSupport.stream(contractsIterable.spliterator(), false).filter(function).collect(Collectors.toList());
-    }
-
-    /**
-     * Filters the repository by given Subscription ID (Long ID)
-     *
-     * @return an {@code List<Contract>} - if any contracts with specific Subscription ID were found, otherwise returns null.
-     */
-    public boolean verifyActiveContract(Contract contract, int duration) {
-        return ChronoUnit.MONTHS.between(contract.getDate(), LocalDate.now()) <= duration;
     }
 }

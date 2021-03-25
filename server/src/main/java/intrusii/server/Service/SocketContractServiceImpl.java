@@ -78,18 +78,17 @@ public class SocketContractServiceImpl implements SocketContractService{
 
         return executorService.submit( () -> {
             Set<Contract> contracts = contractService.getAllContracts();
-            return ContractUtil.SetToString(contracts, clientService, subscriptionService);
+            return "The contracts are:;" + ContractUtil.SetToString(contracts, clientService, subscriptionService);
         });
     }
 
     @Override
-    public Future<String> filterExpiredContracts() {
+    public Future<String> filterActiveContracts() {
 
         return executorService.submit( () -> {
-            Set<Contract> contracts = contractService.getAllContracts();
-            List<Contract> contractList = contracts.stream().filter(c -> contractService.verifyActiveContract(c, subscriptionService.getSubscriptionByID(c.getSubscriptionId()).getDuration())).collect(Collectors.toList());
+            List<Contract> contractList = contractService.filterActiveContracts();
             Set<Contract> contractSet = new HashSet<>(contractList);
-            return ContractUtil.SetToString(contractSet, clientService, subscriptionService);
+            return "The active contracts are:;" + ContractUtil.SetToString(contractSet, clientService, subscriptionService);
         });
     }
 }

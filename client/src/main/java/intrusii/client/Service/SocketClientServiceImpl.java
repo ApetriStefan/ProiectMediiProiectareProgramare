@@ -10,8 +10,8 @@ import java.util.concurrent.Future;
 
 public class SocketClientServiceImpl implements SocketClientService
 {
-    private ExecutorService executorService;
-    private TcpClient tcpClient;
+    private final ExecutorService executorService;
+    private final TcpClient tcpClient;
 
     public SocketClientServiceImpl(ExecutorService executorService, TcpClient tcpClient){
         this.executorService = executorService;

@@ -8,22 +8,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class Console {
-//    private final SocketController socketClientController;
     private final SocketClientService socketClientService;
     private final SocketSubscriptionService socketSubscriptionService;
     private final SocketContractService socketContractService;
 
-    public Console(SocketClientService socketClientService,SocketSubscriptionService socketSubscriptionService,SocketContractService socketContractService)
-    {
-
+    public Console(SocketClientService socketClientService, SocketSubscriptionService socketSubscriptionService, SocketContractService socketContractService) {
         this.socketClientService = socketClientService;
         this.socketSubscriptionService = socketSubscriptionService;
         this.socketContractService = socketContractService;
-
     }
 
     public void runConsole() {
@@ -92,17 +89,13 @@ public class Console {
                     break;
                 default:
                     System.err.println("Invalid command");
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored) {
-                    }
             }
         }
     }
 
     private void subscriptionMenu() {
         String option;
-        while(true){
+        while (true) {
             printSubscriptionMenu();
             Scanner scannerOption = new Scanner(System.in);
             System.out.print(">> ");
@@ -130,16 +123,13 @@ public class Console {
                     break;
                 default:
                     System.err.println("Invalid command");
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored){}
             }
         }
     }
 
     private void contractMenu() {
         String option;
-        while(true){
+        while (true) {
             printContractMenu();
             Scanner scannerOption = new Scanner(System.in);
             System.out.print(">> ");
@@ -164,9 +154,6 @@ public class Console {
                     break;
                 default:
                     System.err.println("Invalid command");
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored){}
             }
         }
     }
@@ -207,10 +194,9 @@ public class Console {
         System.out.println("0. Back to main menu");
         System.out.println("1. Add a contract");
         System.out.println("2. Delete a contract");
-
         System.out.println("3. Update a contract");
         System.out.println("4. Show all contracts");
-        System.out.println("5. Show the act");
+        System.out.println("5. Show the active contracts");
     }
 
 //`````````````````````````````````````````````````Client`````````````````````````````````````````````````//
@@ -222,35 +208,19 @@ public class Console {
         String client = readClient();
         if (client == null)
             System.err.println("Please insert valid data");
-        else {
-            Future<String> resultFuture = socketClientService.addClient(client);
-            try {
-                String result = resultFuture.get();
-                System.out.println(result);
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+        else
+            CompletableFuture.supplyAsync(() -> socketClientService.addClient(client)).thenAccept(this::printResponse);
     }
 
     /**
      * Deletes a client by an ID that has been read from console.
-     *
      */
     private void deleteClient() {
         String id = readClientID();
-        if (id == null) {
+        if (id == null)
             System.err.println("Invalid ID");
-        }
-        else{
-            Future<String> resultFuture = socketClientService.deleteClient(id);
-            try{
-                String result = resultFuture.get();
-                System.out.println(result);
-            }catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+        else
+            CompletableFuture.supplyAsync(() -> socketClientService.deleteClient(id)).thenAccept(this::printResponse);
     }
 
     /**
@@ -258,18 +228,10 @@ public class Console {
      */
     private void updateClient() {
         String client = readClientUpdate();
-        if (client == null) {
+        if (client == null)
             System.err.println("Invalid input");
-        }
-        else{
-            Future<String> resultFuture = socketClientService.updateClient(client);
-            try {
-                String result = resultFuture.get();
-                System.out.println(result);
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+        else
+            CompletableFuture.supplyAsync(() -> socketClientService.updateClient(client)).thenAccept(this::printResponse);
     }
 
     /**
@@ -277,14 +239,7 @@ public class Console {
      *
      */
     private void printAllClients() {
-        Future<String> resultFuture = socketClientService.getAllClients();
-        try{
-            String result = resultFuture.get();
-            System.out.println("The clients are: ");
-            System.out.println(result.replaceAll(";", "\n"));
-        }catch (InterruptedException | ExecutionException e){
-            System.err.println("Something went wrong with the connection");
-        }
+        CompletableFuture.supplyAsync(socketClientService::getAllClients).thenAccept(this::printResponse);
     }
 
     private void filterClientsByName() {
@@ -292,14 +247,7 @@ public class Console {
         Scanner scannerName = new Scanner(System.in);
         String name = scannerName.nextLine();
 
-        Future<String> resultFuture = socketClientService.filterClientsByName(name);
-        try{
-            String result = resultFuture.get();
-            System.out.println("The clients containing '" + name + "' are: ");
-            System.out.println(result.replaceAll(";", "\n"));
-        }catch (InterruptedException | ExecutionException e){
-            System.err.println("Something went wrong with the connection");
-        }
+        CompletableFuture.supplyAsync(() -> socketClientService.filterClientsByName(name)).thenAccept(this::printResponse);
     }
 
     private void filterClientsByCnp() {
@@ -307,14 +255,7 @@ public class Console {
         Scanner scannerName = new Scanner(System.in);
         String cnp = scannerName.nextLine();
 
-        Future<String> resultFuture = socketClientService.filterClientsByCnp(cnp);
-        try{
-            String result = resultFuture.get();
-            System.out.println("The client with this cnp is: ");
-            System.out.println(result.replaceAll(";", "\n"));
-        }catch (InterruptedException | ExecutionException e){
-            System.err.println("Something went wrong with the connection");
-        }
+        CompletableFuture.supplyAsync(() -> socketClientService.filterClientsByCnp(cnp)).thenAccept(this::printResponse);
     }
 
     /**
@@ -380,18 +321,11 @@ public class Console {
      */
     private void addSubscription() {
         String subscription = readSubscription();
-        if (subscription == null) {
+        if (subscription == null)
             System.err.println("Please insert valid data");
-        }
-        else {
-            Future<String> resultFuture = socketSubscriptionService.addSubscription(subscription);
-            try {
-                String result = resultFuture.get();
-                System.out.println(result);
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+
+        else
+            CompletableFuture.supplyAsync(() -> socketSubscriptionService.addSubscription(subscription)).thenAccept(this::printResponse);
     }
 
     /**
@@ -403,15 +337,8 @@ public class Console {
         if (id == null) {
             System.err.println("Invalid ID");
         }
-        else{
-            Future<String> resultFuture = socketSubscriptionService.deleteSubscription(id);
-            try{
-                String result = resultFuture.get();
-                System.out.println(result);
-            }catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+        else
+            CompletableFuture.supplyAsync(() -> socketSubscriptionService.deleteSubscription(id)).thenAccept(this::printResponse);
     }
 
     /**
@@ -422,15 +349,7 @@ public class Console {
         if (subscription == null) {
             System.err.println("Invalid input");
         }
-        else{
-            Future<String> resultFuture = socketSubscriptionService.updateSubscription(subscription);
-            try {
-                String result = resultFuture.get();
-                System.out.println(result);
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+        CompletableFuture.supplyAsync(() -> socketSubscriptionService.updateSubscription(subscription)).thenAccept(this::printResponse);
     }
 
     /**
@@ -438,14 +357,7 @@ public class Console {
      *
      */
     private void printAllSubscriptions() {
-        Future<String> resultFuture = socketSubscriptionService.getAllSubscriptions();
-        try{
-            String result = resultFuture.get();
-            System.out.println("The subscriptions are: ");
-            System.out.println(result.replaceAll(";", "\n"));
-        }catch (InterruptedException | ExecutionException e){
-            System.err.println("Something went wrong with the connection");
-        }
+        CompletableFuture.supplyAsync(socketSubscriptionService::getAllSubscriptions).thenAccept(this::printResponse);
     }
 
     private void filterSubscriptionsByDuration() {
@@ -453,14 +365,7 @@ public class Console {
         Scanner scannerDuration = new Scanner(System.in);
         String duration = scannerDuration.nextLine();
 
-        Future<String> resultFuture = socketSubscriptionService.filterSubscriptionByDuration(duration);
-        try{
-            String result = resultFuture.get();
-            System.out.println("The subscription with duration '" + duration + "' are: ");
-            System.out.println(result.replaceAll(";", "\n"));
-        }catch (InterruptedException | ExecutionException e){
-            System.err.println("Something went wrong with the connection");
-        }
+        CompletableFuture.supplyAsync(() -> socketSubscriptionService.filterSubscriptionByDuration(duration)).thenAccept(this::printResponse);
     }
 
     private void filterSubscriptionsByType() {
@@ -468,14 +373,7 @@ public class Console {
         Scanner scannerType = new Scanner(System.in);
         String type = scannerType.nextLine();
 
-        Future<String> resultFuture = socketSubscriptionService.filterSubscriptionByType(type);
-        try{
-            String result = resultFuture.get();
-            System.out.println("The subscription of type '" + type + "' are: ");
-            System.out.println(result.replaceAll(";", "\n"));
-        }catch (InterruptedException | ExecutionException e){
-            System.err.println("Something went wrong with the connection");
-        }
+        CompletableFuture.supplyAsync(() -> socketSubscriptionService.filterSubscriptionByType(type)).thenAccept(this::printResponse);
     }
 
     /**
@@ -537,21 +435,12 @@ public class Console {
     /**
      * Adds the contract that has been read from console
      */
-    private void addContract()
-    {
+    private void addContract() {
         String contract = readContract();
-        if (contract == null) {
+        if (contract == null)
             System.err.println("Please insert valid data");
-        }
-        else {
-            Future<String> resultFuture = socketContractService.addContract(contract);
-            try {
-                String result = resultFuture.get();
-                System.out.println(result);
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+        else
+            CompletableFuture.supplyAsync(() -> socketContractService.addContract(contract)).thenAccept(this::printResponse);
     }
 
     /**
@@ -561,18 +450,9 @@ public class Console {
     private void deleteContract() {
         String id = readContractID();
         if (id == null)
-        {
             System.err.println("Invalid ID");
-        }
-        else{
-            Future<String> resultFuture = socketContractService.deleteContract(id);
-            try{
-                String result = resultFuture.get();
-                System.out.println(result);
-            }catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+        else
+            CompletableFuture.supplyAsync(() -> socketContractService.deleteContract(id)).thenAccept(this::printResponse);
     }
 
     /**
@@ -580,18 +460,10 @@ public class Console {
      */
     private void updateContract() {
         String contract = readContractForUpdate();
-        if (contract == null) {
+        if (contract == null)
             System.err.println("Invalid input");
-        }
-        else{
-            Future<String> resultFuture = socketContractService.updateContract(contract);
-            try {
-                String result = resultFuture.get();
-                System.out.println(result);
-            } catch (InterruptedException | ExecutionException e) {
-                System.err.println("Something went wrong with the connection");
-            }
-        }
+        else
+            CompletableFuture.supplyAsync(() -> socketContractService.updateContract(contract)).thenAccept(this::printResponse);
     }
 
 
@@ -600,27 +472,11 @@ public class Console {
      *
      */
     private void printAllContracts() {
-        Future<String> resultFuture = socketContractService.getAllContracts();
-        try{
-            String result = resultFuture.get();
-            System.out.println("The contracts are: ");
-            System.out.println(result.replaceAll(";", "\n"));
-        }catch (InterruptedException | ExecutionException e){
-            System.err.println("Something went wrong with the connection");
-        }
+        CompletableFuture.supplyAsync(socketContractService::getAllContracts).thenAccept(this::printResponse);
     }
 
-    private void filterExpiredContracts()
-    {
-        System.out.println("Active contracts:");
-        Future<String> resultFuture = socketContractService.filterExpiredContracts();
-        try{
-            String result = resultFuture.get();
-            System.out.println("The contracts are: ");
-            System.out.println(result.replaceAll(";", "\n"));
-        }catch (InterruptedException | ExecutionException e){
-            System.err.println("Something went wrong with the connection");
-        }
+    private void filterExpiredContracts() {
+        CompletableFuture.supplyAsync(socketContractService::filterActiveContracts).thenAccept(this::printResponse);
     }
 
     /**
@@ -663,8 +519,7 @@ public class Console {
      *
      * @return an {@code Contract} - null if the data was not valid, otherwise returns the entity.
      */
-    private String readContractForUpdate()
-    {
+    private String readContractForUpdate() {
         System.out.println("Update Contract {id, Client ID}");
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -676,5 +531,14 @@ public class Console {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    private void printResponse(Future<String> response){
+        try {
+            System.out.println(response.get().replaceAll(";", "\n"));
+            System.out.println("******************************");
+        } catch (InterruptedException | ExecutionException e) {
+            System.err.println("Something went wrong with the connection");
+        }
     }
 }

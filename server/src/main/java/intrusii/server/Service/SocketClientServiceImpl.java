@@ -14,14 +14,11 @@ public class SocketClientServiceImpl implements SocketClientService{
 
     private final ExecutorService executorService;
     private final ClientService clientService;
-    private final ContractService contractService;
 
-    public SocketClientServiceImpl(ExecutorService executorService,ClientService clientService,ContractService contractService) {
+    public SocketClientServiceImpl(ExecutorService executorService, ClientService clientService) {
         this.executorService = executorService;
         this.clientService = clientService;
-        this.contractService = contractService;
     }
-
 
     @Override
         public Future<String> addClient(String client) {
@@ -43,7 +40,6 @@ public class SocketClientServiceImpl implements SocketClientService{
             return executorService.submit( () -> {
                 try{
                     Long idLong = Long.parseLong(id);
-                    contractService.deleteContractsByClientID(idLong);
                     clientService.deleteClient(idLong);
                     return "Client successfully deleted";
                 }catch (SocketException |ValidatorException e){
@@ -74,7 +70,7 @@ public class SocketClientServiceImpl implements SocketClientService{
 
             return executorService.submit( () -> {
                 Set<Client> clients = clientService.getAllClients();
-                return ClientUtil.SetToString(clients);
+                return "The clients are:;" + ClientUtil.SetToString(clients);
             });
         }
 
@@ -84,7 +80,7 @@ public class SocketClientServiceImpl implements SocketClientService{
             return executorService.submit( () -> {
                 List<Client> clientList = clientService.filteredByClientName(name);
                 Set<Client> clientSet = new HashSet<>(clientList);
-                return ClientUtil.SetToString(clientSet);
+                return "The clients containing '" + name + "' are:;" + ClientUtil.SetToString(clientSet);
             });
         }
 
@@ -93,7 +89,7 @@ public class SocketClientServiceImpl implements SocketClientService{
             return executorService.submit( () -> {
                 List<Client> clientList = clientService.filteredByClientCNP(cnp);
                 Set<Client> clientSet = new HashSet<>(clientList);
-                return ClientUtil.SetToString(clientSet);
+                return "The client with this cnp is:;" + ClientUtil.SetToString(clientSet);
             });
         }
 
