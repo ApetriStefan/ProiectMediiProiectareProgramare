@@ -1,7 +1,6 @@
 package intrusii.client;
 
 
-import intrusii.client.Controller.SocketClientController;
 import intrusii.client.Service.SocketClientServiceImpl;
 import intrusii.client.Service.SocketContractServiceImpl;
 import intrusii.client.Service.SocketSubscriptionServiceImpl;
@@ -41,7 +40,6 @@ public class ClientApp {
                 SocketClientService socketClientService = new SocketClientServiceImpl(executorService,tcpClient);
                 SocketSubscriptionService socketSubscriptionService = new SocketSubscriptionServiceImpl(executorService,tcpClient);
                 SocketContractService socketContractService = new SocketContractServiceImpl(executorService,tcpClient);
-//                SocketController socketController = new SocketClientController(executorService, tcpClient);
 
                 //Console
                 Console console = new Console(socketClientService,socketSubscriptionService,socketContractService);

@@ -2,7 +2,6 @@ import intrusii.common.SocketClientService;
 import intrusii.common.SocketContractService;
 import intrusii.common.SocketController;
 import intrusii.common.SocketSubscriptionService;
-import intrusii.server.Controller.SocketServerController;
 import intrusii.server.Domain.Client;
 import intrusii.server.Domain.Contract;
 import intrusii.server.Domain.Subscription;
@@ -97,8 +96,6 @@ public class ServerApp {
         //TCP Connection
         TcpServer tcpServer = new TcpServer(executorService, Integer.parseInt(connectionProperties.getProperty("PORT")));
 
-        //ServerConnection
-//        SocketController socketController = new SocketServerController(executorService, clientService, contractService, subscriptionService);
 
         //Add handlers
         Handlers.addHandlerClient(tcpServer, socketClientService);
