@@ -1,6 +1,5 @@
 import intrusii.common.SocketClientService;
 import intrusii.common.SocketContractService;
-import intrusii.common.SocketController;
 import intrusii.common.SocketSubscriptionService;
 import intrusii.server.Domain.Client;
 import intrusii.server.Domain.Contract;

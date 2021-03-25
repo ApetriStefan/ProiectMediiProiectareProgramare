@@ -8,7 +8,6 @@ import intrusii.client.TCP.TcpClient;
 import intrusii.client.UI.Console;
 import intrusii.common.SocketClientService;
 import intrusii.common.SocketContractService;
-import intrusii.common.SocketController;
 import intrusii.common.SocketSubscriptionService;
 
 import java.io.FileInputStream;

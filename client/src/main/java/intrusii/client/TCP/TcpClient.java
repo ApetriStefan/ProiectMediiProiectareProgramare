@@ -1,7 +1,6 @@
 package intrusii.client.TCP;
 
 import intrusii.common.Message;
-import intrusii.common.SocketController;
 import intrusii.common.SocketException;
 
 import java.io.IOException;

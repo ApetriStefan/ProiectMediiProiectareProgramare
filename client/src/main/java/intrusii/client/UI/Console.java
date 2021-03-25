@@ -2,7 +2,6 @@ package intrusii.client.UI;
 
 import intrusii.common.SocketClientService;
 import intrusii.common.SocketContractService;
-import intrusii.common.SocketController;
 import intrusii.common.SocketSubscriptionService;
 
 import java.io.BufferedReader;
