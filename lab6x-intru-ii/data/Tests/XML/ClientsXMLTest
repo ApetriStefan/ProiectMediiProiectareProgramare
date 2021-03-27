@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Clients>
+   <Client id="1">
+      <cnp>123</cnp>
+      <name>name1</name>
+      <email>email1@</email>
+      <address>address1</address>
+   </Client>
+</Clients>
