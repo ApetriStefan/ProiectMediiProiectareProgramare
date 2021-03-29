@@ -1,9 +1,9 @@
 package Repository.DBRepository;
 
-import intrusii.server.Domain.Subscription;
-import intrusii.server.Domain.SubscriptionType;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.SubscriptionValidator;
+import intrusii.common.Domain.Subscription;
+import intrusii.common.Domain.SubscriptionType;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.SubscriptionValidator;
 import intrusii.server.Repository.DBRepository.SubscriptionDBRepository;
 import intrusii.server.Repository.Repository;
 import org.junit.After;
@@ -27,7 +27,7 @@ public class SubscriptionDBRepositoryTest {
     @Before
     public void setUp() throws Exception {
         SubscriptionValidator validator = new SubscriptionValidator();
-        repository = new SubscriptionDBRepository(validator, "jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "incorrect");
+        repository = new SubscriptionDBRepository(validator);
 
         String sql = "ALTER SEQUENCE subscription_id_seq RESTART WITH 4";
         try (var connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "incorrect");

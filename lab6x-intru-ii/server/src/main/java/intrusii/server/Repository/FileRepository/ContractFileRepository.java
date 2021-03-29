@@ -8,8 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import intrusii.server.Domain.Contract;
-import intrusii.server.Domain.Validators.Validator;
+import intrusii.common.Domain.Contract;
+import intrusii.common.Domain.Validators.Validator;
 
 
 public class ContractFileRepository extends FileRepository<Long, Contract> {

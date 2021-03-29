@@ -1,7 +1,7 @@
 package Repository.XMLRepository;
 
-import intrusii.server.Domain.Contract;
-import intrusii.server.Domain.Validators.ContractValidator;
+import intrusii.common.Domain.Contract;
+import intrusii.common.Domain.Validators.ContractValidator;
 import intrusii.server.Repository.Repository;
 import intrusii.server.Repository.XMLRepository.ContractXMLRepository;
 import org.junit.After;

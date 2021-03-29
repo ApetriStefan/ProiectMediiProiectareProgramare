@@ -1,7 +1,7 @@
 package Repository;
 
-import intrusii.server.Domain.BaseEntity;
-import intrusii.server.Domain.Validators.BaseEntityValidator;
+import intrusii.common.Domain.BaseEntity;
+import intrusii.common.Domain.Validators.BaseEntityValidator;
 import intrusii.server.Repository.InMemoryRepository;
 import intrusii.server.Repository.Repository;
 import org.junit.After;

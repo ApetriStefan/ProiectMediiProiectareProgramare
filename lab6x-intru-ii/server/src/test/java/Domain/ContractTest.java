@@ -1,6 +1,6 @@
 package Domain;
 
-import intrusii.server.Domain.Contract;
+import intrusii.common.Domain.Contract;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

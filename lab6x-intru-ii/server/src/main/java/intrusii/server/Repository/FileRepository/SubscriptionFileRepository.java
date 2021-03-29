@@ -6,9 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import intrusii.server.Domain.Subscription;
-import intrusii.server.Domain.SubscriptionType;
-import intrusii.server.Domain.Validators.Validator;
+import intrusii.common.Domain.Subscription;
+import intrusii.common.Domain.SubscriptionType;
+import intrusii.common.Domain.Validators.Validator;
 
 
 public class SubscriptionFileRepository extends FileRepository<Long, Subscription> {

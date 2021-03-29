@@ -8,10 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import intrusii.server.Domain.BaseEntity;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.Validator;
-import intrusii.server.Domain.Validators.ValidatorException;
+import intrusii.common.Domain.BaseEntity;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.Validator;
+import intrusii.common.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.InMemoryRepository;
 
 public abstract class FileRepository<ID, T extends BaseEntity<ID>> extends InMemoryRepository<ID, T> {
