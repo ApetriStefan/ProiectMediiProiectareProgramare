@@ -1,8 +1,8 @@
 package Repository.FileRepository;
 
-import intrusii.server.Domain.Contract;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.ContractValidator;
+import intrusii.common.Domain.Contract;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.ContractValidator;
 import intrusii.server.Repository.FileRepository.ContractFileRepository;
 import intrusii.server.Repository.Repository;
 import org.junit.After;

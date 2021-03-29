@@ -1,8 +1,8 @@
 package intrusii.server.Repository;
 
-import intrusii.server.Domain.BaseEntity;
-import intrusii.server.Domain.Validators.Validator;
-import intrusii.server.Domain.Validators.ValidatorException;
+import intrusii.common.Domain.BaseEntity;
+import intrusii.common.Domain.Validators.Validator;
+import intrusii.common.Domain.Validators.ValidatorException;
 
 import java.util.HashMap;
 import java.util.Map;

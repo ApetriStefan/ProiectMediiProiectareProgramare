@@ -1,9 +1,9 @@
 package Repository.FileRepository;
 
-import intrusii.server.Domain.Subscription;
-import intrusii.server.Domain.SubscriptionType;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.SubscriptionValidator;
+import intrusii.common.Domain.Subscription;
+import intrusii.common.Domain.SubscriptionType;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.SubscriptionValidator;
 import intrusii.server.Repository.FileRepository.SubscriptionFileRepository;
 import intrusii.server.Repository.Repository;
 import org.junit.After;

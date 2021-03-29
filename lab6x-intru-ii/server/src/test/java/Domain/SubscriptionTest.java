@@ -1,7 +1,7 @@
 package Domain;
 
-import intrusii.server.Domain.Subscription;
-import intrusii.server.Domain.SubscriptionType;
+import intrusii.common.Domain.Subscription;
+import intrusii.common.Domain.SubscriptionType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

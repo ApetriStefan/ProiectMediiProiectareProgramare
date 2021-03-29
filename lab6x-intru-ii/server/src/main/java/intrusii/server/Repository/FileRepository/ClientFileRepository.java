@@ -1,7 +1,7 @@
 package intrusii.server.Repository.FileRepository;
 
-import intrusii.server.Domain.Client;
-import intrusii.server.Domain.Validators.Validator;
+import intrusii.common.Domain.Client;
+import intrusii.common.Domain.Validators.Validator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

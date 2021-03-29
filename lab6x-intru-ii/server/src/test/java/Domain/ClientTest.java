@@ -1,6 +1,6 @@
 package Domain;
 
-import intrusii.server.Domain.Client;
+import intrusii.common.Domain.Client;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

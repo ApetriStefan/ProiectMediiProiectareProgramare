@@ -1,9 +1,9 @@
 package intrusii.server.Repository.DBRepository;
 
-import intrusii.server.Domain.Subscription;
-import intrusii.server.Domain.SubscriptionType;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.Validator;
+import intrusii.common.Domain.Subscription;
+import intrusii.common.Domain.SubscriptionType;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.Validator;
 import intrusii.server.Repository.Repository;
 
 import java.sql.DriverManager;
@@ -13,16 +13,13 @@ import java.util.Optional;
 import java.util.Set;
 
 public class SubscriptionDBRepository implements Repository<Long, Subscription> {
-    private final String url;
-    private final String user;
-    private final String password;
+    private final String url = "";
+    private final String user = "";
+    private final String password = "";
     private final Validator<Subscription> validator;
 
-    public SubscriptionDBRepository(Validator<Subscription> validator, String url, String user, String password) {
+    public SubscriptionDBRepository(Validator<Subscription> validator) {
         this.validator = validator;
-        this.url = url;
-        this.user = user;
-        this.password = password;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package intrusii.server.Repository.DBRepository;
 
-import intrusii.server.Domain.Contract;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.Validator;
+import intrusii.common.Domain.Contract;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.Validator;
 import intrusii.server.Repository.Repository;
 
 import java.sql.Date;
@@ -14,16 +14,13 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ContractDBRepository implements Repository<Long, Contract> {
-    private final String url;
-    private final String user;
-    private final String password;
+    private final String url = "";
+    private final String user = "";
+    private final String password = "";
     private final Validator<Contract> validator;
 
-    public ContractDBRepository(Validator<Contract> validator, String url, String user, String password) {
+    public ContractDBRepository(Validator<Contract> validator) {
         this.validator = validator;
-        this.url = url;
-        this.user = user;
-        this.password = password;
     }
 
     @Override

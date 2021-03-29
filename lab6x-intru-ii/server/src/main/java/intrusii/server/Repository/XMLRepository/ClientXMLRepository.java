@@ -10,10 +10,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import intrusii.server.Domain.Client;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.Validator;
-import intrusii.server.Domain.Validators.ValidatorException;
+import intrusii.common.Domain.Client;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.Validator;
+import intrusii.common.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.InMemoryRepository;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;

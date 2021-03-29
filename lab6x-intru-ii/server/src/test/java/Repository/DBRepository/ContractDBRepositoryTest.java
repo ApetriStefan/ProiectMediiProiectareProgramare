@@ -1,8 +1,8 @@
 package Repository.DBRepository;
 
-import intrusii.server.Domain.Contract;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.ContractValidator;
+import intrusii.common.Domain.Contract;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.ContractValidator;
 import intrusii.server.Repository.DBRepository.ContractDBRepository;
 import intrusii.server.Repository.Repository;
 import org.junit.After;
@@ -27,7 +27,7 @@ public class ContractDBRepositoryTest {
     @Before
     public void setUp() throws Exception {
         ContractValidator validator = new ContractValidator();
-        repository = new ContractDBRepository(validator, "jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "incorrect");
+        repository = new ContractDBRepository(validator);
 
         String sql = "ALTER SEQUENCE contract_id_seq RESTART WITH 4";
         try (var connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "incorrect");

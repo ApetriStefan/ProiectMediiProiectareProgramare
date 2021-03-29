@@ -1,26 +1,31 @@
 package intrusii.client.UI;
 
-import intrusii.common.SocketClientService;
-import intrusii.common.SocketContractService;
-import intrusii.common.SocketSubscriptionService;
+import intrusii.common.Domain.Client;
+import intrusii.common.Domain.Contract;
+import intrusii.common.Domain.Subscription;
+import intrusii.common.Domain.SubscriptionType;
+import intrusii.common.Domain.Validators.ValidatorException;
+import intrusii.common.Service.ClientService;
+import intrusii.common.Service.ContractService;
+import intrusii.common.Service.ServiceException;
+import intrusii.common.Service.SubscriptionService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class Console {
-    private final SocketClientService socketClientService;
-    private final SocketSubscriptionService socketSubscriptionService;
-    private final SocketContractService socketContractService;
+    private final ClientService clientService;
+    private final SubscriptionService subscriptionService;
+    private final ContractService contractService;
 
-    public Console(SocketClientService socketClientService, SocketSubscriptionService socketSubscriptionService, SocketContractService socketContractService) {
-        this.socketClientService = socketClientService;
-        this.socketSubscriptionService = socketSubscriptionService;
-        this.socketContractService = socketContractService;
+    public Console(ClientService clientService, SubscriptionService subscriptionService, ContractService contractService) {
+        this.clientService = clientService;
+        this.subscriptionService = subscriptionService;
+        this.contractService = contractService;
     }
 
     public void runConsole() {
@@ -29,7 +34,7 @@ public class Console {
         System.out.println("Goodbye!");
     }
 
-    //`````````````````````````````````````````````````Menu`````````````````````````````````````````````````//
+//`````````````````````````````````````````````````Menu`````````````````````````````````````````````````//
     private void mainMenu() {
         String option;
         while (true) {
@@ -51,10 +56,6 @@ public class Console {
                     break;
                 default:
                     System.err.println("Invalid command");
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored) {
-                    }
             }
         }
     }
@@ -205,33 +206,43 @@ public class Console {
      * Adds the client that has been read from console
      */
     private void addClient() {
-        String client = readClient();
-        if (client == null)
-            System.err.println("Please insert valid data");
-        else
-            CompletableFuture.supplyAsync(() -> socketClientService.addClient(client)).thenAccept(this::printResponse);
+        Client client = readClient();
+        if (client != null)
+            try{
+                clientService.addClient(client);
+                System.out.println("Client successfully added");
+            }catch (ValidatorException ex){
+                System.err.println(ex.getMessage());
+            }
     }
 
     /**
      * Deletes a client by an ID that has been read from console.
      */
     private void deleteClient() {
-        String id = readClientID();
-        if (id == null)
-            System.err.println("Invalid ID");
-        else
-            CompletableFuture.supplyAsync(() -> socketClientService.deleteClient(id)).thenAccept(this::printResponse);
+        System.out.print("Read Client ID: ");
+        Long id = readLong();
+        if (id != null)
+            try{
+                clientService.deleteClient(id);
+                System.out.println("Client successfully deleted");
+            }catch (ValidatorException | ServiceException ex){
+                System.err.println(ex.getMessage());
+            }
     }
 
     /**
      * Update the Client that has been read from console
      */
     private void updateClient() {
-        String client = readClientUpdate();
-        if (client == null)
-            System.err.println("Invalid input");
-        else
-            CompletableFuture.supplyAsync(() -> socketClientService.updateClient(client)).thenAccept(this::printResponse);
+        Client client = readClientUpdate();
+        if (client != null)
+            try{
+                clientService.updateClient(client);
+                System.out.println("Client successfully updated");
+            }catch (ValidatorException | ServiceException ex){
+                System.err.println(ex.getMessage());
+            }
     }
 
     /**
@@ -239,32 +250,37 @@ public class Console {
      *
      */
     private void printAllClients() {
-        CompletableFuture.supplyAsync(socketClientService::getAllClients).thenAccept(this::printResponse);
+        System.out.println("The clients are:");
+        clientService.getAllClients().forEach(System.out::println);
     }
 
     private void filterClientsByName() {
         System.out.print("Enter name: ");
-        Scanner scannerName = new Scanner(System.in);
-        String name = scannerName.nextLine();
+        String name = readString();
 
-        CompletableFuture.supplyAsync(() -> socketClientService.filterClientsByName(name)).thenAccept(this::printResponse);
+        if (name != null){
+            System.out.println("The clients containing '" + name + "' are:");
+            clientService.filterClientsByName(name).forEach(System.out::println);
+        }
     }
 
     private void filterClientsByCnp() {
         System.out.print("Enter CNP: ");
-        Scanner scannerName = new Scanner(System.in);
-        String cnp = scannerName.nextLine();
+       String cnp = readString();
 
-        CompletableFuture.supplyAsync(() -> socketClientService.filterClientsByCnp(cnp)).thenAccept(this::printResponse);
+       if(cnp != null) {
+           System.out.println("The client with this cnp is:");
+           clientService.filterClientsByCnp(cnp).forEach(System.out::println);
+       }
     }
 
     /**
      * Reads a client from the keyboard.
      *
-     * @return an {@code String} - null if the data was not valid, otherwise returns the entity.
+     * @return an {@code Client} - null if the data was not valid, otherwise returns the entity.
      */
-    private String readClient() {
-        System.out.println("Read Client {CNP, Name, Email, Address}");
+    private Client readClient() {
+        System.out.println("Read Client {CNP, Name, Email, Address}: ");
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
             String cnp = bufferRead.readLine();
@@ -272,24 +288,9 @@ public class Console {
             String email = bufferRead.readLine();
             String address = bufferRead.readLine();
 
-            return cnp + ";" + name + ";" + email + ";" + address;
+            return new Client(cnp, name, email, address);
         } catch (IOException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Reads a client ID from the keyboard.
-     *
-     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
-     */
-    private String readClientID() {
-        System.out.println("Read Client ID {id}");
-        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            return bufferRead.readLine();
-        }
-        catch (IOException e) {
+            System.err.println("Something went wrong! Check the file");
             return null;
         }
     }
@@ -299,18 +300,25 @@ public class Console {
      *
      * @return an {@code Client} - null if the data was not valid, otherwise returns the entity.
      */
-    private String readClientUpdate() {
-        System.out.println("Read Client {ID, CNP, Name, Email, Address}");
+    private Client readClientUpdate() {
+        System.out.println("Read Client {ID, CNP, Name, Email, Address}: ");
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
-            String id = bufferRead.readLine();
+            Long id = Long.valueOf(bufferRead.readLine());
             String cnp = bufferRead.readLine();
             String name = bufferRead.readLine();
             String email = bufferRead.readLine();
             String address = bufferRead.readLine();
 
-            return id + ";" + cnp + ";" + name + ";" + email + ";" + address;
-        } catch (IOException e) {
+            Client client = new Client(cnp, name, email, address);
+            client.setId(id);
+            return client;
+        } catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
+            return null;
+        }
+        catch (NumberFormatException ex){
+            System.err.println("Invalid id! The id should be of type integer.");
             return null;
         }
     }
@@ -320,12 +328,14 @@ public class Console {
      * Adds the Subscription that has been read from console
      */
     private void addSubscription() {
-        String subscription = readSubscription();
-        if (subscription == null)
-            System.err.println("Please insert valid data");
-
-        else
-            CompletableFuture.supplyAsync(() -> socketSubscriptionService.addSubscription(subscription)).thenAccept(this::printResponse);
+        Subscription subscription = readSubscription();
+        if (subscription != null)
+            try{
+                subscriptionService.addSubscription(subscription);
+                System.out.println("Subscription successfully added");
+            }catch (ValidatorException ex){
+                System.err.println(ex.getMessage());
+            }
     }
 
     /**
@@ -333,23 +343,29 @@ public class Console {
      *
      */
     private void deleteSubscription() {
-        String id = readSubscriptionID();
-        if (id == null) {
-            System.err.println("Invalid ID");
-        }
-        else
-            CompletableFuture.supplyAsync(() -> socketSubscriptionService.deleteSubscription(id)).thenAccept(this::printResponse);
+        System.out.print("Read Subscription ID: ");
+        Long id = readLong();
+        if (id != null)
+            try{
+                subscriptionService.deleteSubscription(id);
+                System.out.println("Subscription successfully deleted");
+            }catch (ValidatorException | ServiceException ex){
+                System.err.println(ex.getMessage());
+            }
     }
 
     /**
      * Update the Subscription that has been read from console
      */
     private void updateSubscription() {
-        String subscription = readSubscriptionUpdate();
-        if (subscription == null) {
-            System.err.println("Invalid input");
-        }
-        CompletableFuture.supplyAsync(() -> socketSubscriptionService.updateSubscription(subscription)).thenAccept(this::printResponse);
+        Subscription subscription = readSubscriptionUpdate();
+        if (subscription != null)
+            try{
+                subscriptionService.updateSubscription(subscription);
+                System.out.println("Subscription successfully updated");
+            }catch (ValidatorException | ServiceException ex){
+                System.err.println(ex.getMessage());
+            }
     }
 
     /**
@@ -357,23 +373,28 @@ public class Console {
      *
      */
     private void printAllSubscriptions() {
-        CompletableFuture.supplyAsync(socketSubscriptionService::getAllSubscriptions).thenAccept(this::printResponse);
+        System.out.println("The subscriptions are:");
+        subscriptionService.getAllSubscriptions().forEach(System.out::println);
     }
 
     private void filterSubscriptionsByDuration() {
         System.out.print("Enter duration: ");
-        Scanner scannerDuration = new Scanner(System.in);
-        String duration = scannerDuration.nextLine();
+        Integer duration = readInteger();
 
-        CompletableFuture.supplyAsync(() -> socketSubscriptionService.filterSubscriptionByDuration(duration)).thenAccept(this::printResponse);
+        if(duration != null) {
+            System.out.println("The subscription with duration '" + duration + "' are:");
+            subscriptionService.filterSubscriptionByDuration(duration).forEach(System.out::println);
+        }
     }
 
     private void filterSubscriptionsByType() {
         System.out.print("Enter type: ");
-        Scanner scannerType = new Scanner(System.in);
-        String type = scannerType.nextLine();
+        SubscriptionType type = readSubscriptionType();
 
-        CompletableFuture.supplyAsync(() -> socketSubscriptionService.filterSubscriptionByType(type)).thenAccept(this::printResponse);
+        if (type != null) {
+            System.out.println("The subscription of type '" + type.getLabel() + "' are:");
+            subscriptionService.filterSubscriptionByType(type).forEach(System.out::println);
+        }
     }
 
     /**
@@ -381,16 +402,21 @@ public class Console {
      *
      * @return an {@code Subscription} - null if the data was not valid, otherwise returns the entity.
      */
-    private String readSubscription() {
-        System.out.println("Read Subscription {Type, Price, Duration}");
+    private Subscription readSubscription() {
+        System.out.println("Read Subscription {Type, Price, Duration}: ");
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
-            String type = bufferRead.readLine();
-            String price = bufferRead.readLine();
-            String duration = bufferRead.readLine();
+            SubscriptionType type = SubscriptionType.valueOf(bufferRead.readLine());
+            float price = Float.parseFloat(bufferRead.readLine());
+            int duration = Integer.parseInt(bufferRead.readLine());
 
-            return type + ";" + price + ";" + duration;
+            return new Subscription(type, price, duration);
         } catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
+            return null;
+        }
+        catch (IllegalArgumentException ex){
+            System.out.println("There is no type with this name!");
             return null;
         }
     }
@@ -400,33 +426,28 @@ public class Console {
      *
      * @return an {@code Subscription} - null if the data was not valid, otherwise returns the entity.
      */
-    private String readSubscriptionUpdate() {
+    private Subscription readSubscriptionUpdate() {
         System.out.println("Read Subscription {id, Type, Price, Duration}");
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
-            String id = bufferRead.readLine();
-            String type = bufferRead.readLine();
-            String price = bufferRead.readLine();
-            String duration = bufferRead.readLine();
+            Long id = Long.valueOf(bufferRead.readLine());
+            SubscriptionType type = SubscriptionType.valueOf(bufferRead.readLine());
+            float price = Float.parseFloat(bufferRead.readLine());
+            int duration = Integer.parseInt(bufferRead.readLine());
 
-            return id + ";" + type + ";" + price + ";" + duration;
-        } catch (IOException e) {
+            Subscription subscription = new Subscription(type, price, duration);
+            subscription.setId(id);
+            return subscription;
+        } catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
             return null;
         }
-    }
-
-    /**
-     * Reads a subscription ID from the keyboard.
-     *
-     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
-     */
-    private String readSubscriptionID() {
-        System.out.println("Read Subscription ID {id}");
-        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            return bufferRead.readLine();
+        catch (NumberFormatException ex){
+            System.err.println("Invalid input! The required type is integer.");
+            return null;
         }
-        catch (IOException e) {
+        catch (IllegalArgumentException ex){
+            System.err.println("There is no type with this name!");
             return null;
         }
     }
@@ -436,11 +457,14 @@ public class Console {
      * Adds the contract that has been read from console
      */
     private void addContract() {
-        String contract = readContract();
-        if (contract == null)
-            System.err.println("Please insert valid data");
-        else
-            CompletableFuture.supplyAsync(() -> socketContractService.addContract(contract)).thenAccept(this::printResponse);
+        Contract contract = readContract();
+        if (contract != null)
+            try {
+                contractService.addContract(contract);
+                System.out.println("Contract successfully added");
+            }catch (ValidatorException | ServiceException ex){
+                System.err.println(ex.getMessage());
+            }
     }
 
     /**
@@ -448,35 +472,43 @@ public class Console {
      *
      */
     private void deleteContract() {
-        String id = readContractID();
-        if (id == null)
-            System.err.println("Invalid ID");
-        else
-            CompletableFuture.supplyAsync(() -> socketContractService.deleteContract(id)).thenAccept(this::printResponse);
+        System.out.print("Read Contract ID: ");
+        Long id = readLong();
+        if(id != null)
+            try {
+                contractService.deleteContract(id);
+                System.out.println("Contract successfully deleted");
+            }catch (ValidatorException ex){
+                System.err.println(ex.getMessage());
+            }
     }
 
     /**
      * Updates the contract that has been read from console
      */
     private void updateContract() {
-        String contract = readContractForUpdate();
-        if (contract == null)
-            System.err.println("Invalid input");
-        else
-            CompletableFuture.supplyAsync(() -> socketContractService.updateContract(contract)).thenAccept(this::printResponse);
+        Contract contract = readContractForUpdate();
+        if (contract != null)
+            try {
+                contractService.updateContract(contract);
+                System.out.println("Contract successfully updated");
+            }catch (ValidatorException | ServiceException ex){
+                System.err.println(ex.getMessage());
+            }
     }
-
 
     /**
      * Prints all contracts in the repository
      *
      */
     private void printAllContracts() {
-        CompletableFuture.supplyAsync(socketContractService::getAllContracts).thenAccept(this::printResponse);
+        System.out.println("The contracts are:");
+        contractService.getAllContracts().forEach(System.out::println);
     }
 
     private void filterExpiredContracts() {
-        CompletableFuture.supplyAsync(socketContractService::filterActiveContracts).thenAccept(this::printResponse);
+        System.out.println("The active contracts are:");
+        contractService.filterActiveContracts().forEach(System.out::println);
     }
 
     /**
@@ -484,32 +516,25 @@ public class Console {
      *
      * @return an {@code Contract} - null if the data was not valid, otherwise returns the entity.
      */
-    private String readContract() {
-        System.out.println("Read Contract {Client ID, Subscription ID, Date<yyyy-mm-dd>}");
+    private Contract readContract() {
+        System.out.println("Read Contract {Client ID, Subscription ID, Date<yyyy-mm-dd>}: ");
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
-            String clientId = bufferRead.readLine();
-            String subscriptionId = bufferRead.readLine();
-            String date = bufferRead.readLine();
-            return clientId+";"+subscriptionId+";"+date;
-        } catch (IOException | NumberFormatException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
+            Long clientID = Long.parseLong(bufferRead.readLine());
+            Long subscriptionID = Long.parseLong(bufferRead.readLine());
+            LocalDate date = LocalDate.parse(bufferRead.readLine());
 
-    /**
-     * Reads a contract ID from the keyboard.
-     *
-     * @return an {@code Long} - null if the data was not valid, otherwise returns the ID.
-     */
-    private String readContractID() {
-        System.out.println("Read Contract ID {id}");
-        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            return bufferRead.readLine();
+            return new Contract(clientID,subscriptionID, date);
+        } catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
+            return null;
         }
-        catch (IOException e) {
+        catch (NumberFormatException ex){
+            System.err.println("Invalid input! The required type is long.");
+            return null;
+        }
+        catch (DateTimeParseException ex){
+            System.err.println("Invalid format for the date!");
             return null;
         }
     }
@@ -519,26 +544,86 @@ public class Console {
      *
      * @return an {@code Contract} - null if the data was not valid, otherwise returns the entity.
      */
-    private String readContractForUpdate() {
+    private Contract readContractForUpdate() {
         System.out.println("Update Contract {id, Client ID}");
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
-            String id = bufferRead.readLine();
-            String clientId = bufferRead.readLine();
-            return id+";"+clientId;
+            Long id = Long.parseLong(bufferRead.readLine());
+            Long clientID = Long.parseLong(bufferRead.readLine());
+            Long subscriptionID = Long.parseLong(bufferRead.readLine());
+            LocalDate date = LocalDate.parse(bufferRead.readLine());
 
-        } catch (IOException | NumberFormatException ex) {
-            ex.printStackTrace();
+            Contract contract = new Contract(clientID,subscriptionID, date);
+            contract.setId(id);
+            return contract;
+        } catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
+            return null;
         }
-        return null;
+        catch (NumberFormatException ex){
+            System.err.println("Invalid input! The required type is long.");
+            return null;
+        }
+        catch (DateTimeParseException ex){
+            System.err.println("Invalid format for the date!");
+            return null;
+        }
     }
 
-    private void printResponse(Future<String> response){
+//`````````````````````````````````````````````````Common`````````````````````````````````````````````````//
+    private Integer readInteger(){
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
-            System.out.println(response.get().replaceAll(";", "\n"));
-            System.out.println("******************************");
-        } catch (InterruptedException | ExecutionException e) {
-            System.err.println("Something went wrong with the connection");
+            return Integer.parseInt(bufferRead.readLine());
+        }
+        catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
+            return null;
+        }
+        catch (NumberFormatException ex){
+            System.err.println("Invalid input! The required type is integer.");
+            return null;
+        }
+    }
+
+    private Long readLong(){
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            return Long.valueOf(bufferRead.readLine());
+        }
+        catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
+            return null;
+        }
+        catch (NumberFormatException ex){
+            System.err.println("Invalid input! The required type is long.");
+            return null;
+        }
+    }
+
+    private String readString(){
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            return bufferRead.readLine();
+        }
+        catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
+            return null;
+        }
+    }
+
+    private SubscriptionType readSubscriptionType(){
+        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            return SubscriptionType.valueOf(bufferRead.readLine());
+        }
+        catch (IOException ex) {
+            System.err.println("Something went wrong! Check the file");
+            return null;
+        }
+        catch (IllegalArgumentException ex){
+            System.err.println("There is no type with this name!");
+            return null;
         }
     }
 }

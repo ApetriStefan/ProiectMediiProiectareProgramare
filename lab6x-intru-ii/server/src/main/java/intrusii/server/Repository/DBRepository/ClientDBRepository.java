@@ -1,8 +1,8 @@
 package intrusii.server.Repository.DBRepository;
 
-import intrusii.server.Domain.Client;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.Validator;
+import intrusii.common.Domain.Client;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.Validator;
 import intrusii.server.Repository.Repository;
 
 import java.sql.DriverManager;
@@ -12,16 +12,13 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ClientDBRepository implements Repository<Long, Client> {
-    private final String url;
-    private final String user;
-    private final String password;
+    private final String url = "";
+    private final String user = "";
+    private final String password = "";
     private final Validator<Client> validator;
 
-    public ClientDBRepository(Validator<Client> validator, String url, String user, String password) {
+    public ClientDBRepository(Validator<Client> validator) {
         this.validator = validator;
-        this.url = url;
-        this.user = user;
-        this.password = password;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package Repository.DBRepository;
 
-import intrusii.server.Domain.Client;
-import intrusii.server.Domain.Validators.ClientValidator;
-import intrusii.server.Domain.Validators.ContractException;
+import intrusii.common.Domain.Client;
+import intrusii.common.Domain.Validators.ClientValidator;
+import intrusii.common.Domain.Validators.ContractException;
 import intrusii.server.Repository.DBRepository.ClientDBRepository;
 import intrusii.server.Repository.Repository;
 import org.junit.After;
@@ -26,7 +26,7 @@ public class ClientDBRepositoryTest {
     @Before
     public void setUp() throws Exception {
         ClientValidator validator = new ClientValidator();
-        repository = new ClientDBRepository(validator, "jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "cfsa123");
+        repository = new ClientDBRepository(validator);
 
         String sql = "ALTER SEQUENCE client_id_seq RESTART WITH 4";
         try (var connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/intrusiiJDBCTest", "postgres", "cfsa123");

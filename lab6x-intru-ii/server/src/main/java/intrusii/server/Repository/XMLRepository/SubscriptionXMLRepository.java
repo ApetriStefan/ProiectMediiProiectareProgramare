@@ -1,10 +1,10 @@
 package intrusii.server.Repository.XMLRepository;
 
-import intrusii.server.Domain.Subscription;
-import intrusii.server.Domain.SubscriptionType;
-import intrusii.server.Domain.Validators.ContractException;
-import intrusii.server.Domain.Validators.Validator;
-import intrusii.server.Domain.Validators.ValidatorException;
+import intrusii.common.Domain.Subscription;
+import intrusii.common.Domain.SubscriptionType;
+import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.Validator;
+import intrusii.common.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.InMemoryRepository;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;

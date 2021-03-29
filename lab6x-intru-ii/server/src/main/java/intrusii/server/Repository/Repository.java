@@ -1,7 +1,7 @@
 package intrusii.server.Repository;
 
-import intrusii.server.Domain.BaseEntity;
-import intrusii.server.Domain.Validators.ValidatorException;
+import intrusii.common.Domain.BaseEntity;
+import intrusii.common.Domain.Validators.ValidatorException;
 
 import java.util.Optional;
 
