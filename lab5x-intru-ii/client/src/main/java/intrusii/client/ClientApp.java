@@ -26,7 +26,7 @@ public class ClientApp {
                 Properties connectionProperties = null;
                 try {
                         connectionProperties = new Properties();
-                        connectionProperties.load(new FileInputStream("./common/ConnectionConfig.properties"));
+                        connectionProperties.load(new FileInputStream("./lab5x-intru-ii/common/ConnectionConfig.properties"));
 
                 }catch (IOException ex){
                         ex.printStackTrace();

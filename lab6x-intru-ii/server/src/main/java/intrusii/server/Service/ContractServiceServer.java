@@ -50,6 +50,7 @@ public class ContractServiceServer implements ContractService{
     }
 
     public List<Contract> getAllContracts() {
+//        return contracts.stream().map(contract -> "*ID{" + contract.getId() + "};" + clientService.getClientByID(contract.getClientId()) + ";" + subscriptionService.getSubscriptionByID(contract.getSubscriptionId()) + ";" + "Date{" +  contract.getDate() + "};").reduce("", (contractString, contract) ->  contractString + ";" + contract);
         Iterable<Contract> contracts = repository.findAll();
         return StreamSupport.stream(contracts.spliterator(), false).collect(Collectors.toList());
     }
@@ -63,4 +64,5 @@ public class ContractServiceServer implements ContractService{
         contractsIterable = repository.findAll();
         return StreamSupport.stream(contractsIterable.spliterator(), false).filter(function).collect(Collectors.toList());
     }
+
 }

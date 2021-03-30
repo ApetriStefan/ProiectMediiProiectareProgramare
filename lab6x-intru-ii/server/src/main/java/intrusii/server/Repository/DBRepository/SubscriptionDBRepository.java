@@ -1,5 +1,6 @@
 package intrusii.server.Repository.DBRepository;
 
+import intrusii.common.Domain.Client;
 import intrusii.common.Domain.Contract;
 import intrusii.common.Domain.Subscription;
 import intrusii.common.Domain.SubscriptionType;
@@ -21,7 +22,12 @@ public class SubscriptionDBRepository implements Repository<Long, Subscription> 
     @Autowired
     private JdbcOperations jdbcOperations;
 
-    private SubscriptionValidator validator;
+    private Validator<Subscription> validator;
+
+    public SubscriptionDBRepository(Validator<Subscription> subscriptionValidator)
+    {
+        this.validator=subscriptionValidator;
+    }
 
     @Override
     public Optional<Subscription> findOne(Long id){
@@ -30,17 +36,15 @@ public class SubscriptionDBRepository implements Repository<Long, Subscription> 
         }
 
         String sql = "SELECT * FROM Subscription WHERE id = ?";
-        Subscription subscription = jdbcOperations.query(sql, rs -> {
-            SubscriptionType type = SubscriptionType.Default;
-            String typeString = rs.getString("type");
-            type = type.setSubscriptionType(typeString);
-            float price = rs.getFloat("price");
-            int duration = rs.getInt("duration");
-            Subscription s = new Subscription(type, price, duration);
-            s.setId(id);
-            return s;
-        });
-        return Optional.ofNullable(subscription);
+        Subscription subscriptionTemp;
+        subscriptionTemp = jdbcOperations.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+                new Subscription(
+                        SubscriptionType.valueOf(rs.getString("type")),
+                        rs.getFloat("price"),
+                        rs.getInt("duration")
+                ));
+        subscriptionTemp.setId(id);
+        return Optional.ofNullable(subscriptionTemp);
     }
 
     @Override

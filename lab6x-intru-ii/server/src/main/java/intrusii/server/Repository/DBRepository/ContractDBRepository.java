@@ -21,7 +21,12 @@ public class ContractDBRepository implements Repository<Long, Contract> {
     @Autowired
     private JdbcOperations jdbcOperations;
 
-    private ContractValidator validator;
+    private Validator<Contract> validator;
+
+    public ContractDBRepository(Validator<Contract> contractValidator)
+    {
+        this.validator = contractValidator;
+    }
 
     @Override
     public Optional<Contract> findOne(Long id){
@@ -30,15 +35,15 @@ public class ContractDBRepository implements Repository<Long, Contract> {
         }
 
         String sql = "SELECT * FROM Contract WHERE id = ?";
-        Contract contract = jdbcOperations.query(sql, rs -> {
-            Long clientId = rs.getLong("clientId");
-            Long subscriptionId = rs.getLong("subscriptionId");
-            LocalDate date = rs.getDate("date").toLocalDate();
-            Contract c  = new Contract(clientId, subscriptionId, date);
-            c.setId(id);
-            return c;
-        });
-        return Optional.ofNullable(contract);
+        Contract contractTemp;
+        contractTemp = jdbcOperations.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+                new Contract(
+                        rs.getLong("clientId"),
+                        rs.getLong("subscriptionId"),
+                        rs.getDate("date").toLocalDate()
+                ));
+        contractTemp.setId(id);
+        return Optional.ofNullable(contractTemp);
     }
 
     @Override

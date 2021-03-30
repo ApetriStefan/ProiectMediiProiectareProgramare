@@ -20,7 +20,11 @@ public class ClientDBRepository implements Repository<Long, Client> {
     @Autowired
     private JdbcOperations jdbcOperations;
 
-    private ClientValidator validator;
+    private Validator<Client> validator;
+
+    public ClientDBRepository(Validator<Client> clientValidator) {
+        this.validator=clientValidator;
+    }
 
     @Override
     public Optional<Client> findOne(Long id){
@@ -29,16 +33,28 @@ public class ClientDBRepository implements Repository<Long, Client> {
         }
 
         String sql = "SELECT * FROM Client WHERE id = ?";
-        Client client = jdbcOperations.query(sql, rs -> {
-            String cnp = rs.getString("cnp");
-            String name = rs.getString("name");
-            String email = rs.getString("email");
-            String address = rs.getString("address");
-            Client c = new Client(cnp, name, email, address);
-            c.setId(id);
-            return c;
-        });
-        return Optional.ofNullable(client);
+        Client clientTemp;
+        clientTemp = jdbcOperations.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+                new Client(
+                        rs.getString("cnp"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("address")
+                ));
+        clientTemp.setId(id);
+        return Optional.ofNullable(clientTemp);
+
+//        Client client = jdbcOperations.query(sql, rs -> {
+//            String cnp = rs.getString("cnp");
+//            String name = rs.getString("name");
+//            String email = rs.getString("email");
+//            String address = rs.getString("address");
+//            Client c = new Client(cnp, name, email, address);
+//            c.setId(id);
+//            return c;
+//        });
+//        client.setId(id);
+//        return Optional.ofNullable(client);
     }
 
     @Override
@@ -70,8 +86,14 @@ public class ClientDBRepository implements Repository<Long, Client> {
         if (id == null) {
             throw new IllegalArgumentException("Id must not be null");
         }
+
+
         findOne(id).orElseThrow(() -> new ContractException("No client with this id"));
+
+
         String sql = "DELETE FROM Client WHERE id = ?";
+
+
         Optional<Client> client = findOne(id);
         jdbcOperations.update(sql, id);
         return client;

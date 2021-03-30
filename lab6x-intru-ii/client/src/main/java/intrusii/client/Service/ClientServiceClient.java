@@ -28,6 +28,11 @@ public class ClientServiceClient implements ClientService {
     }
 
     @Override
+    public Client getClientByID(Long id) {
+        return clientService.getClientByID(id);
+    }
+
+    @Override
     public List<Client> getAllClients() {
         return clientService.getAllClients();
     }

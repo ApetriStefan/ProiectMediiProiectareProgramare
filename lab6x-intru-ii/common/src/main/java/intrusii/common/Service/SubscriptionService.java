@@ -13,6 +13,8 @@ public interface SubscriptionService {
 
     void updateSubscription(Subscription subscription);
 
+    Subscription getSubscriptionByID(Long id);
+
     List<Subscription> getAllSubscriptions();
 
     List<Subscription> filterSubscriptionByDuration(int duration);

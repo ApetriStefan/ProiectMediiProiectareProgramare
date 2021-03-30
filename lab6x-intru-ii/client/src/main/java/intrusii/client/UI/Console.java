@@ -503,7 +503,12 @@ public class Console {
      */
     private void printAllContracts() {
         System.out.println("The contracts are:");
-        contractService.getAllContracts().forEach(System.out::println);
+        contractService.getAllContracts().forEach(contract->{
+            System.out.println("Id{"+ contract.getId()+"}");
+            System.out.println(clientService.getClientByID(contract.getClientId()));
+            System.out.println(subscriptionService.getSubscriptionByID(contract.getSubscriptionId()));
+            System.out.println("Date{"+contract.getDate()+"}"+"\n");
+        });
     }
 
     private void filterExpiredContracts() {

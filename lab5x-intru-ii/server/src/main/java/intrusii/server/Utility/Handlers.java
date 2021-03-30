@@ -3,6 +3,7 @@ package intrusii.server.Utility;
 import intrusii.common.*;
 import intrusii.server.TCP.TcpServer;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -104,11 +105,27 @@ public class Handlers {
 
     private static Message addHandlerTry(Future<String> res) {
         try {
-            String result = res.get();
-            Message response = new Message(Message.OK, result);
-            return response;
+            CompletableFuture<Message> completableFuture = CompletableFuture.supplyAsync(() -> {
+                try {
+                    String result = res.get();
+                    return new Message(Message.OK, result);
+                } catch (InterruptedException | ExecutionException e) {
+                    return new Message(Message.ERROR, e.getMessage());
+                }
+            });
+            return completableFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             return new Message(Message.ERROR, e.getMessage());
+
+//        try {
+//            CompletableFuture.supplyAsync(() -> socketContractService.updateContract(contract)).thenAccept(this::printResponse);
+//
+//            String result = res.get();
+//            Message response = new Message(Message.OK, result);
+//            return response;
+//        } catch (InterruptedException | ExecutionException e) {
+//            return new Message(Message.ERROR, e.getMessage());
+//        }
         }
     }
 }

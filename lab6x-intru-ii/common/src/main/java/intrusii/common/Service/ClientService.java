@@ -12,6 +12,8 @@ public interface ClientService {
 
     void updateClient(Client client);
 
+    Client getClientByID(Long id);
+
     List<Client> getAllClients();
 
     List<Client> filterClientsByName(String name);

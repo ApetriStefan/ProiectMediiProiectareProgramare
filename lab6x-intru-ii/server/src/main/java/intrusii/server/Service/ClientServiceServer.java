@@ -6,6 +6,7 @@ import intrusii.common.Service.ClientService;
 import intrusii.common.Service.ServiceException;
 import intrusii.common.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.Repository;
+import org.springframework.expression.spel.CodeFlow;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -35,6 +36,9 @@ public class ClientServiceServer implements ClientService {
         repository.update(client).orElseThrow(() -> new ServiceException("There is no client with this ID"));
     }
 
+    public Client getClientByID(Long id) {
+        return repository.findOne(id).orElseThrow(() -> new ServiceException("There is no client with this id"));
+    }
     public List<Client> getAllClients() {
         Iterable<Client> clients = repository.findAll();
         return StreamSupport.stream(clients.spliterator(), false).collect(Collectors.toList());

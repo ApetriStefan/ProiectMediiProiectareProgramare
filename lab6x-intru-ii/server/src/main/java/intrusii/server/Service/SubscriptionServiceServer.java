@@ -36,6 +36,9 @@ public class SubscriptionServiceServer implements SubscriptionService {
         repository.update(subscription).orElseThrow(() -> new ServiceException("There is no subscription with this ID"));
     }
 
+    public Subscription getSubscriptionByID(Long id){
+        return repository.findOne(id).orElseThrow(() -> new ServiceException("There is no subscription with this id"));
+    }
     public List<Subscription> getAllSubscriptions() {
         Iterable<Subscription> subscriptions = repository.findAll();
         return StreamSupport.stream(subscriptions.spliterator(), false).collect(Collectors.toList());

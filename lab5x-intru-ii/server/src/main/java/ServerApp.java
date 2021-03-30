@@ -46,7 +46,7 @@ public class ServerApp {
         Repository<Long, Contract> contractRepository = null;
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("./data/config.properties"));
+            properties.load(new FileInputStream("./lab5x-intru-ii/data/config.properties"));
             switch (properties.getProperty("persistenceEngine")) {
                 case "database" -> {
                     clientRepository = new ClientDBRepository(clientValidator, properties.getProperty("url"), properties.getProperty("username"), properties.getProperty("password"));
@@ -54,9 +54,9 @@ public class ServerApp {
                     contractRepository = new ContractDBRepository(contractValidator, properties.getProperty("url"), properties.getProperty("username"), properties.getProperty("password"));
                 }
                 case "xml" -> {
-                    clientRepository = new ClientXMLRepository(clientValidator, "./data/XML/clientsXML");
-                    subscriptionRepository = new SubscriptionXMLRepository(subscriptionValidator, "./data/XML/subscriptionsXML");
-                    contractRepository = new ContractXMLRepository(contractValidator, "./data/XML/contractsXML");
+                    clientRepository = new ClientXMLRepository(clientValidator, "./lab5x-intru-ii/data/XML/clientsXML");
+                    subscriptionRepository = new SubscriptionXMLRepository(subscriptionValidator, "./lab5x-intru-ii/data/XML/subscriptionsXML");
+                    contractRepository = new ContractXMLRepository(contractValidator, "./lab5x-intru-ii/data/XML/contractsXML");
                 }
                 case "memory" -> {
                     clientRepository = new InMemoryRepository<>(clientValidator);
@@ -64,9 +64,9 @@ public class ServerApp {
                     contractRepository = new InMemoryRepository<>(contractValidator);
                 }
                 default -> {
-                    clientRepository = new ClientFileRepository(clientValidator, "./data/File/clients");
-                    subscriptionRepository = new SubscriptionFileRepository(subscriptionValidator, "./data/File/subscriptions");
-                    contractRepository = new ContractFileRepository(contractValidator, "./data/File/contracts");
+                    clientRepository = new ClientFileRepository(clientValidator, "./lab5x-intru-ii/data/File/clients");
+                    subscriptionRepository = new SubscriptionFileRepository(subscriptionValidator, "./lab5x-intru-ii/data/File/subscriptions");
+                    contractRepository = new ContractFileRepository(contractValidator, "./lab5x-intru-ii/data/File/contracts");
                 }
             }
         }catch (IOException ex){
@@ -86,7 +86,7 @@ public class ServerApp {
         Properties connectionProperties = null;
         try {
             connectionProperties = new Properties();
-            connectionProperties.load(new FileInputStream("./common/ConnectionConfig.properties"));
+            connectionProperties.load(new FileInputStream("./lab5x-intru-ii/common/ConnectionConfig.properties"));
 
         }catch (IOException ex){
             ex.printStackTrace();

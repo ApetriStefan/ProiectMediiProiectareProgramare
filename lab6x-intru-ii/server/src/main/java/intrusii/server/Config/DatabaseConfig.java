@@ -24,13 +24,13 @@ public class DatabaseConfig {
     private DataSource dataSource() {
         try {
         Properties properties = new Properties();
-        properties.load(new FileInputStream("./data/config.properties"));
+        properties.load(new FileInputStream("./lab6x-intru-ii/data/config.properties"));
         BasicDataSource dataSource=new BasicDataSource();
         dataSource.setDriverClassName(Driver.class.getName());
         dataSource.setUsername(properties.getProperty("username"));
         dataSource.setPassword(properties.getProperty("password"));
         dataSource.setUrl(properties.getProperty("url"));
-        dataSource.setInitialSize(2);
+        dataSource.setInitialSize(6);
         return dataSource;
         }catch (IOException ex){
             ex.printStackTrace(); 

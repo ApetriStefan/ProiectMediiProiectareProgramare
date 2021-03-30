@@ -29,6 +29,11 @@ public class SubscriptionServiceClient implements SubscriptionService {
     }
 
     @Override
+    public Subscription getSubscriptionByID(Long id) {
+        return subscriptionService.getSubscriptionByID(id);
+    }
+
+    @Override
     public List<Subscription> getAllSubscriptions() {
         return subscriptionService.getAllSubscriptions();
     }

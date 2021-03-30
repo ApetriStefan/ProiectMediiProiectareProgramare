@@ -3,6 +3,9 @@ package intrusii.server.Config;
 import intrusii.common.Domain.Client;
 import intrusii.common.Domain.Contract;
 import intrusii.common.Domain.Subscription;
+import intrusii.server.Repository.DBRepository.ClientDBRepository;
+import intrusii.server.Repository.DBRepository.ContractDBRepository;
+import intrusii.server.Repository.DBRepository.SubscriptionDBRepository;
 import intrusii.server.Repository.FileRepository.ClientFileRepository;
 import intrusii.server.Repository.FileRepository.ContractFileRepository;
 import intrusii.server.Repository.FileRepository.SubscriptionFileRepository;
@@ -69,33 +72,33 @@ public class ServerConfig {
     }
 
 //`````````````````````````````````````````````````Repository`````````````````````````````````````````````````//
-    @Bean
-    Repository<Long, Client> clientRepository(){
-        return new ClientFileRepository(clientValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Clients");
-    }
-
-    @Bean
-    Repository<Long, Subscription> subscriptionRepository(){
-        return new SubscriptionFileRepository(subscriptionValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Subscriptions");
-    }
-
-    @Bean
-    Repository<Long, Contract> contractRepository(){
-        return new ContractFileRepository(contractValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Contracts");
-    }
-
 //    @Bean
 //    Repository<Long, Client> clientRepository(){
-//        return new ClientDBRepository(clientValidator());
+//        return new ClientFileRepository(clientValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Clients");
 //    }
 //
 //    @Bean
 //    Repository<Long, Subscription> subscriptionRepository(){
-//        return new SubscriptionDBRepository(subscriptionValidator());
+//        return new SubscriptionFileRepository(subscriptionValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Subscriptions");
 //    }
 //
 //    @Bean
 //    Repository<Long, Contract> contractRepository(){
-//        return new ContractDBRepository(contractValidator());
+//        return new ContractFileRepository(contractValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Contracts");
 //    }
+
+    @Bean
+    Repository<Long, Client> clientRepository(){
+        return new ClientDBRepository(clientValidator());
+    }
+
+    @Bean
+    Repository<Long, Subscription> subscriptionRepository(){
+        return new SubscriptionDBRepository(subscriptionValidator());
+    }
+
+    @Bean
+    Repository<Long, Contract> contractRepository(){
+        return new ContractDBRepository(contractValidator());
+    }
 }
