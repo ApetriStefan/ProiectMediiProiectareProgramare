@@ -71,17 +71,17 @@ public class ServerConfig {
 //`````````````````````````````````````````````````Repository`````````````````````````````````````````````````//
     @Bean
     Repository<Long, Client> clientRepository(){
-        return new ClientFileRepository(clientValidator(), "C:\\Users\\savin\\Desktop\\university\\second year\\second semester\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Clients");
+        return new ClientFileRepository(clientValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Clients");
     }
 
     @Bean
     Repository<Long, Subscription> subscriptionRepository(){
-        return new SubscriptionFileRepository(subscriptionValidator(), "C:\\Users\\savin\\Desktop\\university\\second year\\second semester\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Subscriptions");
+        return new SubscriptionFileRepository(subscriptionValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Subscriptions");
     }
 
     @Bean
     Repository<Long, Contract> contractRepository(){
-        return new ContractFileRepository(contractValidator(), "C:\\Users\\savin\\Desktop\\university\\second year\\second semester\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Contracts");
+        return new ContractFileRepository(contractValidator(), "E:\\Programare\\MPP\\lab5x-intru-ii\\lab6x-intru-ii\\data\\File\\Contracts");
     }
 
 //    @Bean

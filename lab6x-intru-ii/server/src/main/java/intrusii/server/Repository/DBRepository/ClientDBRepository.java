@@ -1,10 +1,15 @@
 package intrusii.server.Repository.DBRepository;
 
 import intrusii.common.Domain.Client;
+import intrusii.common.Domain.Validators.ClientValidator;
 import intrusii.common.Domain.Validators.ContractException;
 import intrusii.common.Domain.Validators.Validator;
 import intrusii.server.Repository.Repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcOperations;
+
+import javax.swing.text.html.Option;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -12,14 +17,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ClientDBRepository implements Repository<Long, Client> {
-    private final String url = "";
-    private final String user = "";
-    private final String password = "";
-    private final Validator<Client> validator;
+    @Autowired
+    private JdbcOperations jdbcOperations;
 
-    public ClientDBRepository(Validator<Client> validator) {
-        this.validator = validator;
-    }
+    private ClientValidator validator;
 
     @Override
     public Optional<Client> findOne(Long id){
@@ -28,51 +29,31 @@ public class ClientDBRepository implements Repository<Long, Client> {
         }
 
         String sql = "SELECT * FROM Client WHERE id = ?";
-        Client client = null;
-        try(var connection = DriverManager.getConnection(url, user, password);
-            var ps = connection.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            try(var rs = ps.executeQuery()){
-                if(rs.next()) {
-                    String cnp = rs.getString("cnp");
-                    String name = rs.getString("name");
-                    String email = rs.getString("email");
-                    String address = rs.getString("address");
-                    client = new Client(cnp, name, email, address);
-                    client.setId(id);
-                }
-            }catch (SQLException ex){
-                throw new ContractException(ex);
-            }
-        }catch (SQLException ex){
-            throw new ContractException(ex);
-        }
+        Client client = jdbcOperations.query(sql, rs -> {
+            String cnp = rs.getString("cnp");
+            String name = rs.getString("name");
+            String email = rs.getString("email");
+            String address = rs.getString("address");
+            Client c = new Client(cnp, name, email, address);
+            c.setId(id);
+            return c;
+        });
         return Optional.ofNullable(client);
     }
 
     @Override
     public Iterable<Client> findAll() {
-        Set<Client> allClients = new HashSet<>();
         String sql = "SELECT * FROM Client";
-
-        try(var connection = DriverManager.getConnection(url, user, password);
-            var ps = connection.prepareStatement(sql);
-            var rs = ps.executeQuery()){
-            while(rs.next()){
-                Long id = rs.getLong("id");
-                String cnp = rs.getString("cnp");
-                String name = rs.getString("name");
-                String mail = rs.getString("email");
-                String address = rs.getString("address");
-                Client client = new Client(cnp, name, mail, address);
-                client.setId(id);
-
-                allClients.add(client);
-            }
-        }catch (SQLException ex){
-            throw new ContractException(ex);
-        }
-        return allClients;
+        return jdbcOperations.query(sql, (rs, i) -> {
+            Long cid = rs.getLong("id");
+            String cnp = rs.getString("cnp");
+            String name = rs.getString("name");
+            String email = rs.getString("email");
+            String address = rs.getString("address");
+            Client client = new Client(cnp, name, email, address);
+            client.setId(cid);
+            return client;
+        });
     }
 
     @Override
@@ -80,17 +61,7 @@ public class ClientDBRepository implements Repository<Long, Client> {
         validator.validate(client);
 
         String sql = "INSERT INTO Client (cnp, name, email, address) VALUES (?, ?, ?, ?)";
-        try (var connection = DriverManager.getConnection(url, user, password);
-             var ps = connection.prepareStatement(sql)) {
-            ps.setString(1, client.getCnp());
-            ps.setString(2, client.getName());
-            ps.setString(3, client.getEmail());
-            ps.setString(4, client.getAddress());
-
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            throw new ContractException(ex);
-        }
+        jdbcOperations.update(sql, client.getCnp(), client.getName(), client.getEmail(), client.getAddress());
         return Optional.of(client);
     }
 
@@ -99,19 +70,10 @@ public class ClientDBRepository implements Repository<Long, Client> {
         if (id == null) {
             throw new IllegalArgumentException("Id must not be null");
         }
-
         findOne(id).orElseThrow(() -> new ContractException("No client with this id"));
-
-        Optional<Client> client = findOne(id);
         String sql = "DELETE FROM Client WHERE id = ?";
-        try (var connection = DriverManager.getConnection(url, user, password);
-             var ps = connection.prepareStatement(sql)) {
-            ps.setLong(1, id);
-
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            throw new ContractException(ex);
-        }
+        Optional<Client> client = findOne(id);
+        jdbcOperations.update(sql, id);
         return client;
     }
 
@@ -122,23 +84,10 @@ public class ClientDBRepository implements Repository<Long, Client> {
         }
 
         findOne(client.getId()).orElseThrow(() -> new ContractException("No client with this id"));
-
         validator.validate(client);
 
         String sql = "UPDATE Client SET cnp = ? , name = ?, email = ?, address = ? WHERE id = ?";
-        try (var connection = DriverManager.getConnection(url, user, password);
-             var ps = connection.prepareStatement(sql)) {
-            ps.setString(1, client.getCnp());
-            ps.setString(2, client.getName());
-            ps.setString(3, client.getEmail());
-            ps.setString(4, client.getAddress());
-            ps.setLong(5, client.getId());
-
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            throw new ContractException(ex);
-        }
-
+        jdbcOperations.update(sql, client.getCnp(), client.getName(), client.getEmail(), client.getAddress(), client.getId());
         return Optional.of(client);
     }
 }

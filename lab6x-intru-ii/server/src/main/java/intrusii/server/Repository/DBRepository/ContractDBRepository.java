@@ -1,9 +1,13 @@
 package intrusii.server.Repository.DBRepository;
 
+import intrusii.common.Domain.Client;
 import intrusii.common.Domain.Contract;
 import intrusii.common.Domain.Validators.ContractException;
+import intrusii.common.Domain.Validators.ContractValidator;
 import intrusii.common.Domain.Validators.Validator;
 import intrusii.server.Repository.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcOperations;
 
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -14,14 +18,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ContractDBRepository implements Repository<Long, Contract> {
-    private final String url = "";
-    private final String user = "";
-    private final String password = "";
-    private final Validator<Contract> validator;
+    @Autowired
+    private JdbcOperations jdbcOperations;
 
-    public ContractDBRepository(Validator<Contract> validator) {
-        this.validator = validator;
-    }
+    private ContractValidator validator;
 
     @Override
     public Optional<Contract> findOne(Long id){
@@ -30,49 +30,29 @@ public class ContractDBRepository implements Repository<Long, Contract> {
         }
 
         String sql = "SELECT * FROM Contract WHERE id = ?";
-        Contract contract = null;
-        try(var connection = DriverManager.getConnection(url, user, password);
-            var ps = connection.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            try(var rs = ps.executeQuery()){
-                if(rs.next()) {
-                    Long clientId = rs.getLong("clientId");
-                    Long subscriptionId = rs.getLong("subscriptionId");
-                    LocalDate date = rs.getDate("date").toLocalDate();
-                    contract = new Contract(clientId, subscriptionId, date);
-                    contract.setId(id);
-                }
-            }catch (SQLException ex){
-                throw new ContractException(ex);
-            }
-        }catch (SQLException ex){
-            throw new ContractException(ex);
-        }
+        Contract contract = jdbcOperations.query(sql, rs -> {
+            Long clientId = rs.getLong("clientId");
+            Long subscriptionId = rs.getLong("subscriptionId");
+            LocalDate date = rs.getDate("date").toLocalDate();
+            Contract c  = new Contract(clientId, subscriptionId, date);
+            c.setId(id);
+            return c;
+        });
         return Optional.ofNullable(contract);
     }
 
     @Override
     public Iterable<Contract> findAll() {
-        Set<Contract> allContracts = new HashSet<>();
         String sql = "SELECT * FROM Contract";
-
-        try(var connection = DriverManager.getConnection(url, user, password);
-            var ps = connection.prepareStatement(sql);
-            var rs = ps.executeQuery()){
-            while(rs.next()){
-                Long id = rs.getLong("id");
-                Long clientId = rs.getLong("clientId");
-                Long subscriptionId = rs.getLong("subscriptionId");
-                LocalDate date = rs.getDate("date").toLocalDate();
-                Contract contract = new Contract(clientId, subscriptionId, date);
-                contract.setId(id);
-
-                allContracts.add(contract);
-            }
-        }catch (SQLException ex){
-            throw new ContractException(ex);
-        }
-        return allContracts;
+        return jdbcOperations.query(sql, (rs, i) -> {
+            Long id = rs.getLong("id");
+            Long clientId = rs.getLong("clientId");
+            Long subscriptionId = rs.getLong("subscriptionId");
+            LocalDate date = rs.getDate("date").toLocalDate();
+            Contract contract = new Contract(clientId, subscriptionId, date);
+            contract.setId(id);
+            return contract;
+        });
     }
 
     @Override
@@ -80,16 +60,7 @@ public class ContractDBRepository implements Repository<Long, Contract> {
         validator.validate(contract);
 
         String sql = "INSERT INTO Contract (clientId, subscriptionId, date) VALUES (?, ?, ?)";
-        try (var connection = DriverManager.getConnection(url, user, password);
-             var ps = connection.prepareStatement(sql)) {
-            ps.setLong(1, contract.getClientId());
-            ps.setLong(2, contract.getSubscriptionId());
-            ps.setDate(3, Date.valueOf(contract.getDate()));
-
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            throw new ContractException(ex);
-        }
+        jdbcOperations.update(sql, contract.getClientId(), contract.getSubscriptionId(), contract.getDate());
         return Optional.of(contract);
     }
 
@@ -103,14 +74,7 @@ public class ContractDBRepository implements Repository<Long, Contract> {
 
         Optional<Contract> contract = findOne(id);
         String sql = "DELETE FROM Contract WHERE id = ?";
-        try (var connection = DriverManager.getConnection(url, user, password);
-             var ps = connection.prepareStatement(sql)) {
-            ps.setLong(1, id);
-
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            throw new ContractException(ex);
-        }
+        jdbcOperations.update(sql, id);
         return contract;
     }
 
@@ -121,22 +85,10 @@ public class ContractDBRepository implements Repository<Long, Contract> {
         }
 
         findOne(contract.getId()).orElseThrow(() -> new ContractException("No contract with this id"));
-
         validator.validate(contract);
 
         String sql = "UPDATE Contract SET clientId = ?, subscriptionId = ?, date = ? where id = ?";
-        try (var connection = DriverManager.getConnection(url, user, password);
-             var ps = connection.prepareStatement(sql)) {
-            ps.setLong(1, contract.getClientId());
-            ps.setLong(2, contract.getSubscriptionId());
-            ps.setDate(3, Date.valueOf(contract.getDate()));
-            ps.setLong(4, contract.getId());
-
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            throw new ContractException(ex);
-        }
-
+        jdbcOperations.update(sql, contract.getClientId(), contract.getSubscriptionId(), contract.getDate(), contract.getId());
         return Optional.of(contract);
     }
 }
