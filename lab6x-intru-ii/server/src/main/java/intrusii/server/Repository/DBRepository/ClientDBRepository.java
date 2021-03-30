@@ -4,6 +4,7 @@ import intrusii.common.Domain.Client;
 import intrusii.common.Domain.Validators.ClientValidator;
 import intrusii.common.Domain.Validators.ContractException;
 import intrusii.common.Domain.Validators.Validator;
+import intrusii.common.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ClientDBRepository implements Repository<Long, Client> {
     @Override
     public Optional<Client> findOne(Long id){
         if(id == null){
-            throw new IllegalArgumentException("Id must not be null");
+            throw new ValidatorException("Id must not be null");
         }
 
         String sql = "SELECT * FROM Client WHERE id = ?";
@@ -84,7 +85,7 @@ public class ClientDBRepository implements Repository<Long, Client> {
     @Override
     public Optional<Client> delete(Long id){
         if (id == null) {
-            throw new IllegalArgumentException("Id must not be null");
+            throw new ValidatorException("Id must not be null");
         }
 
 
@@ -102,7 +103,7 @@ public class ClientDBRepository implements Repository<Long, Client> {
     @Override
     public Optional<Client> update(Client client){
         if (client == null) {
-            throw new IllegalArgumentException("Client must not be null");
+            throw new ValidatorException("Client must not be null");
         }
 
         findOne(client.getId()).orElseThrow(() -> new ContractException("No client with this id"));

@@ -7,6 +7,7 @@ import intrusii.common.Domain.SubscriptionType;
 import intrusii.common.Domain.Validators.ContractException;
 import intrusii.common.Domain.Validators.SubscriptionValidator;
 import intrusii.common.Domain.Validators.Validator;
+import intrusii.common.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -32,7 +33,7 @@ public class SubscriptionDBRepository implements Repository<Long, Subscription> 
     @Override
     public Optional<Subscription> findOne(Long id){
         if(id == null){
-            throw new IllegalArgumentException("Id must not be null");
+            throw new ValidatorException("Id must not be null");
         }
 
         String sql = "SELECT * FROM Subscription WHERE id = ?";
@@ -75,7 +76,7 @@ public class SubscriptionDBRepository implements Repository<Long, Subscription> 
     @Override
     public Optional<Subscription> delete(Long id){
         if (id == null) {
-            throw new IllegalArgumentException("Id must not be null");
+            throw new ValidatorException("Id must not be null");
         }
 
         findOne(id).orElseThrow(() -> new ContractException("No subscription with this id"));
@@ -89,7 +90,7 @@ public class SubscriptionDBRepository implements Repository<Long, Subscription> 
     @Override
     public Optional<Subscription> update(Subscription subscription){
         if (subscription == null) {
-            throw new IllegalArgumentException("Subscription must not be null");
+            throw new ValidatorException("Subscription must not be null");
         }
 
         findOne(subscription.getId()).orElseThrow(() -> new ContractException("No subscription with this id"));

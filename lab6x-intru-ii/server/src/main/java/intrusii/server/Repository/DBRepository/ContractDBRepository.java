@@ -5,6 +5,7 @@ import intrusii.common.Domain.Contract;
 import intrusii.common.Domain.Validators.ContractException;
 import intrusii.common.Domain.Validators.ContractValidator;
 import intrusii.common.Domain.Validators.Validator;
+import intrusii.common.Domain.Validators.ValidatorException;
 import intrusii.server.Repository.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -31,7 +32,7 @@ public class ContractDBRepository implements Repository<Long, Contract> {
     @Override
     public Optional<Contract> findOne(Long id){
         if(id == null){
-            throw new IllegalArgumentException("Id must not be null");
+            throw new ValidatorException("Id must not be null");
         }
 
         String sql = "SELECT * FROM Contract WHERE id = ?";
@@ -72,7 +73,7 @@ public class ContractDBRepository implements Repository<Long, Contract> {
     @Override
     public Optional<Contract> delete(Long id){
         if (id == null) {
-            throw new IllegalArgumentException("Id must not be null");
+            throw new ValidatorException("Id must not be null");
         }
 
         findOne(id).orElseThrow(() -> new ContractException("No contract with this id"));
@@ -86,7 +87,7 @@ public class ContractDBRepository implements Repository<Long, Contract> {
     @Override
     public Optional<Contract> update(Contract contract){
         if (contract == null) {
-            throw new IllegalArgumentException("Contract must not be null");
+            throw new ValidatorException("Contract must not be null");
         }
 
         findOne(contract.getId()).orElseThrow(() -> new ContractException("No contract with this id"));
